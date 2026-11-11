@@ -1,6 +1,8 @@
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import AlterarCartaoModal from '../components/AlterarCartaoModal';
 import CalendarioRotina from '../components/CalendarioRotina';
 import DayShake from '../components/DayShake';
 import { PLANOS } from '../data/planos';
@@ -8,7 +10,7 @@ import { styles } from '../styles/DashBoard.styles';
 
 const TEXTO_GERENCIAR: Record<string, string> = {
   basic: 'Gerenciar Assinatura',
-  fit: 'Gerenciar Plano',
+  fit: 'Gerenciar Plano',   
   black: 'Gerenciar Plano',
 };
 
@@ -19,7 +21,19 @@ export default function Dashboard() {
     nome?: string;
   }>();
 
+  const [cartaoFinal, setCartaoFinal] = useState('4566');
+  const [modalCartao, setModalCartao] = useState(false);
+
   const plano = PLANOS.find((p) => p.id === planoId) ?? PLANOS[0];
+
+  function salvarCartao(final: string, bandeira: string) {
+    setCartaoFinal(final);
+    setModalCartao(false);
+    Alert.alert(
+      'Cartão atualizado',
+      `${bandeira} final ${final} salvo com sucesso!`
+    );
+  }
 
   function cancelarPlano() {
     Alert.alert(
@@ -92,9 +106,12 @@ export default function Dashboard() {
           <View style={styles.pagLinha}>
             <View style={styles.pagInfo}>
               <Ionicons name="card" size={26} color="#FFFFFF" />
-              <Text style={styles.cartaoFinal}>•••• •••• 4566</Text>
+              <Text style={styles.cartaoFinal}>•••• •••• {cartaoFinal}</Text>
             </View>
-            <Pressable style={styles.botaoAlterar}>
+            <Pressable
+              style={styles.botaoAlterar}
+              onPress={() => setModalCartao(true)}
+            >
               <Text style={styles.botaoAlterarTexto}>Alterar</Text>
             </Pressable>
           </View>
@@ -118,6 +135,12 @@ export default function Dashboard() {
           <Text style={styles.cancelarTexto}>Cancelar plano</Text>
         </Pressable>
       </View>
+
+      <AlterarCartaoModal
+        visible={modalCartao}
+        onClose={() => setModalCartao(false)}
+        onSalvar={salvarCartao}
+      />
     </ScrollView>
   );
 }
