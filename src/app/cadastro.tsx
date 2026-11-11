@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
+  Alert,
   KeyboardTypeOptions,
   Pressable,
   ScrollView,
@@ -71,7 +72,27 @@ export default function Cadastro() {
   const [verConfirmar, setVerConfirmar] = useState(false);
   const [pais, setPais] = useState<Pais>(PAISES[0]);
 
+  function validar(): string | null {
+    if (!nome.trim()) return 'Digite seu nome completo.';
+    if (nascimento.length < 10)
+      return 'Digite a data de nascimento completa (DD/MM/AAAA).';
+    if (apenasNumeros(cpf).length !== 11)
+      return 'O CPF precisa ter 11 dígitos.';
+    if (apenasNumeros(telefone).length < 8) return 'Digite um telefone válido.';
+    if (!/^\S+@\S+\.\S+$/.test(email)) return 'Digite um e-mail válido.';
+    if (senha.length < 6) return 'A senha precisa ter pelo menos 6 caracteres.';
+    if (senha !== confirmar) return 'As senhas não são iguais.';
+    return null;
+  }
+
   function continuar() {
+    const erro = validar();
+
+    if (erro) {
+      Alert.alert('Atenção', erro);
+      return;
+    }
+
     console.log({
       nome,
       nascimento,
@@ -79,6 +100,8 @@ export default function Cadastro() {
       telefone: `+${pais.ddi}${apenasNumeros(telefone)}`,
       email,
     });
+
+    router.push('/planos');
   }
   return (
     <ScrollView
