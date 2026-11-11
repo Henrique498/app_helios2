@@ -12,15 +12,12 @@ export default function HomeScreen() {
     p.loop = true;
     p.muted = true;
     p.play();
-    
   });
 
   return (
     <View style={styles.container}>
-      {/* Removido 'translucent' que é padrão no expo-status-bar */}
       <StatusBar style="light" />
 
-      {/* Removido 'allowsFullscreen' que não existe em VideoViewProps */}
       <View style={StyleSheet.absoluteFill}>
         <VideoView
           player={player}
@@ -48,11 +45,15 @@ export default function HomeScreen() {
             Acompanhe seus treinos, planos e evolução em um só lugar.
           </Text>
 
-          <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+          <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => router.push('/cadastro')}>
             <Text style={styles.buttonText}>COMEÇAR AGORA</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.7} style={styles.loginContainer} onPress={() => router.push('/login')}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.loginContainer}
+            onPress={() => router.push('/login')}
+          >
             <Text style={styles.loginText}>
               Já tem uma conta? <Text style={styles.loginLink}>Entrar.</Text>
             </Text>
