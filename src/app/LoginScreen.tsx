@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import {
@@ -17,6 +18,7 @@ export default function LoginScreen() {
 
   function handleLogin() {
     console.log('login', email, senha);
+    router.replace('/dashboard');
   }
 
   return (
@@ -61,11 +63,11 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.8}
-        onPress={handleLogin}
+          style={styles.button}
+          activeOpacity={0.8}
+          onPress={handleLogin}
         >
-            <Text style={styles.buttonText}>Entrar</Text>
+          <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

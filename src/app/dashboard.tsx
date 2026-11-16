@@ -7,10 +7,10 @@ import CalendarioRotina from '../components/CalendarioRotina';
 import DayShake from '../components/DayShake';
 import { PLANOS } from '../data/planos';
 import { styles } from '../styles/DashBoard.styles';
-
+    
 const TEXTO_GERENCIAR: Record<string, string> = {
   basic: 'Gerenciar Assinatura',
-  fit: 'Gerenciar Plano',   
+  fit: 'Gerenciar Plano',
   black: 'Gerenciar Plano',
 };
 
