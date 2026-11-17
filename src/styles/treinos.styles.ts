@@ -3,109 +3,136 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0E17',
+    backgroundColor: '#0A0F1D',
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 50,
     paddingBottom: 40,
   },
   backButton: {
-    marginBottom: 16,
     alignSelf: 'flex-start',
+    marginBottom: 16,
+    padding: 4,
   },
   header: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   iconTop: {
-    marginBottom: 8,
+    marginBottom: 12,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '800',
     color: '#FFFFFF',
+    fontSize: 32,
+    fontWeight: '900',
     lineHeight: 38,
-    marginBottom: 10,
   },
   titleHighlight: {
     color: '#F5B800',
   },
   subtitle: {
-    fontSize: 13,
     color: '#9BA3B4',
-    lineHeight: 19,
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 10,
   },
+
+  // Abas dos dias da semana
   daysRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   dayTab: {
-    backgroundColor: '#161F30',
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    minWidth: 56,
+    height: 40,
     borderRadius: 10,
+    backgroundColor: '#131B26',
+    borderWidth: 1,
+    borderColor: '#1F2A3A',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
   },
   dayTabActive: {
     backgroundColor: '#F5B800',
+    borderColor: '#F5B800',
   },
   dayTabText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
+    color: '#9BA3B4',
     fontSize: 13,
+    fontWeight: '700',
   },
   dayTabTextActive: {
     color: '#0A0E17',
+    fontWeight: '800',
   },
+
+  // Card principal do dia
   card: {
-    backgroundColor: '#131B26',
-    borderRadius: 18,
+    backgroundColor: '#0D1B2A',
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#1F2A3A',
-    overflow: 'hidden',
-    paddingBottom: 24,
+    borderColor: '#1E2D3D',
+    padding: 16,
   },
   cardHeader: {
     backgroundColor: '#F5B800',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    borderRadius: 16,
+    justifyContent: 'space-between',
+    marginBottom: 12,
   },
-  cardHeaderTitle: {
+  cardTitle: {
+    color: '#0A0E17',
     fontSize: 16,
     fontWeight: '800',
-    color: '#0A0E17',
   },
-  exerciseList: {
-    paddingHorizontal: 14,
-    paddingTop: 12,
+  emptyText: {
+    color: '#9BA3B4',
+    fontSize: 14,
+    textAlign: 'center',
+    paddingVertical: 24,
+  },
+
+  // Lista numerada de exercícios
+  itemWrapper: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#1E2D3D',
+    paddingVertical: 12,
   },
   exerciseRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1E2836',
+    gap: 10,
   },
-  dragIcon: {
-    marginRight: 8,
-  },
-  numberBadge: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: '#1E2836',
-    justifyContent: 'center',
+  numeroCirculo: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#1B2838',
     alignItems: 'center',
-    marginRight: 12,
+    justifyContent: 'center',
   },
-  numberText: {
+  numeroCirculoConcluido: {
+    backgroundColor: '#22C55E',
+  },
+  numeroTexto: {
     color: '#FFFFFF',
-    fontWeight: '700',
-    fontSize: 14,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  exerciseIconBox: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: 'rgba(245, 184, 0, 0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   exerciseInfo: {
     flex: 1,
@@ -114,88 +141,142 @@ export const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '700',
-    marginBottom: 3,
   },
-  exerciseMeta: {
-    color: '#8E96A4',
+  exerciseDetails: {
+    color: '#9BA3B4',
     fontSize: 12,
+    marginTop: 3,
   },
-  emptyText: {
-    color: '#8E96A4',
-    textAlign: 'center',
-    paddingVertical: 24,
-    fontSize: 13,
+
+  // Gaveta expandida ao clicar no exercício
+  gavetaExpandida: {
+    marginTop: 12,
+    backgroundColor: '#0A0F1D',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#1E2D3D',
+    padding: 12,
+    gap: 10,
   },
-  addButton: {
-    alignSelf: 'center',
-    marginTop: 22,
+  gavetaTitulo: {
+    color: '#F5B800',
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  inputsLinha: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  campoBox: {
+    flex: 1,
+    backgroundColor: '#111827',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#1E293B',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  campoLabel: {
+    color: '#94A3B8',
+    fontSize: 10,
+    marginBottom: 2,
+  },
+  campoInput: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+    padding: 0,
+  },
+  ajusteCargaRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  ajusteBtn: {
+    flex: 1,
+    backgroundColor: '#1E293B',
+    borderRadius: 8,
+    paddingVertical: 7,
+    alignItems: 'center',
+  },
+  ajusteBtnTexto: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  metricasBox: {
+    gap: 4,
+  },
+  metricaTexto: {
+    color: '#94A3B8',
+    fontSize: 11,
+  },
+  metricaDestaque: {
+    color: '#F5B800',
+    fontWeight: '700',
+  },
+  acoesGavetaRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 2,
+  },
+  btnSalvarEdicao: {
+    flex: 1,
     borderWidth: 1,
     borderColor: '#F5B800',
+    borderRadius: 8,
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnSalvarEdicaoTexto: {
+    color: '#F5B800',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  btnConcluirEx: {
+    flex: 2,
+    backgroundColor: '#16A34A',
+    borderRadius: 8,
+    height: 38,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  btnConcluirExTexto: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
+  },
+
+  // Botões do rodapé do card
+  addButton: {
+    borderWidth: 1.5,
+    borderColor: '#F5B800',
     borderRadius: 24,
-    paddingVertical: 11,
-    paddingHorizontal: 26,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 14,
   },
   addButtonText: {
     color: '#F5B800',
-    fontWeight: '700',
-    fontSize: 13,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  modalContent: {
-    backgroundColor: '#131B26',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: '#1F2A3A',
-  },
-  modalTitle: {
-    color: '#FFFFFF',
-    fontSize: 17,
-    fontWeight: '700',
-    marginBottom: 16,
-  },
-  input: {
-    backgroundColor: '#0A0E17',
-    color: '#FFFFFF',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
     fontSize: 14,
-    borderWidth: 1,
-    borderColor: '#1F2A3A',
-    marginBottom: 12,
-  },
-  inputRow: {
-    flexDirection: 'row',
-  },
-  modalActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 10,
-    marginTop: 8,
-  },
-  modalBtn: {
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 10,
-  },
-  modalBtnCancel: {
-    backgroundColor: '#1E2836',
-  },
-  modalBtnCancelText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  modalBtnConfirm: {
-    backgroundColor: '#F5B800',
-  },
-  modalBtnConfirmText: {
-    color: '#0A0E17',
     fontWeight: '700',
+  },
+  concluirTreinoButton: {
+    backgroundColor: '#F5B800',
+    borderRadius: 24,
+    height: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 10,
+  },
+  concluirTreinoButtonText: {
+    color: '#0A0E17',
+    fontSize: 15,
+    fontWeight: '800',
   },
 });

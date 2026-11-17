@@ -9,49 +9,24 @@ import {
   View,
 } from 'react-native';
 
-import { AdicionarExercicioModal } from '../components/AdicionarExercicioModal';
 import { CalendarioRotinas } from '../components/CalendarioRotinas';
+import { useRotina } from '../contexts/RotinaContext';
 import { styles } from '../styles/treinos.styles';
-import { DiaSemana, Exercicio, TREINOS_INICIAIS } from '../types/treinos';
+import { DiaSemana } from '../types/treinos';
 
 export default function TreinoScreen() {
   const { dia } = useLocalSearchParams<{ dia?: DiaSemana }>();
-
+  const { rotina, removerExercicio } = useRotina();
   const [diaSelecionado, setDiaSelecionado] = useState<DiaSemana>('SEG');
-  const [rotina, setRotina] =
-    useState<Record<DiaSemana, Exercicio[]>>(TREINOS_INICIAIS);
-  const [modalVisivel, setModalVisivel] = useState(false);
 
   useEffect(() => {
-    if (dia && ['SEG', 'TER', 'QUA', 'QUI', 'SEX'].includes(dia)) {
+    if (
+      dia &&
+      ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'].includes(dia)
+    ) {
       setDiaSelecionado(dia);
     }
   }, [dia]);
-
-  const removerExercicio = (id: string) => {
-    setRotina((prev) => ({
-      ...prev,
-      [diaSelecionado]: prev[diaSelecionado].filter((item) => item.id !== id),
-    }));
-  };
-
-  const adicionarExercicio = (
-    nome: string,
-    series: string,
-    repeticoes: string
-  ) => {
-    const novoItem: Exercicio = {
-      id: String(Date.now()),
-      nome,
-      series,
-      repeticoes,
-    };
-
-    setRotina((prev) => ({
-      ...prev,
-      [diaSelecionado]: [...prev[diaSelecionado], novoItem],
-    }));
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,17 +63,15 @@ export default function TreinoScreen() {
           diaSelecionado={diaSelecionado}
           onSelectDia={setDiaSelecionado}
           exercicios={rotina[diaSelecionado] || []}
-          onRemoverExercicio={removerExercicio}
-          onAbrirModalAdicionar={() => setModalVisivel(true)}
+          onRemoverExercicio={(id) => removerExercicio(diaSelecionado, id)}
+          onAbrirModalAdicionar={() =>
+            router.push({
+              pathname: '/adicionar-exercicio',
+              params: { dia: diaSelecionado },
+            })
+          }
         />
       </ScrollView>
-
-      <AdicionarExercicioModal
-        visible={modalVisivel}
-        diaSelecionado={diaSelecionado}
-        onClose={() => setModalVisivel(false)}
-        onConfirm={adicionarExercicio}
-      />
     </SafeAreaView>
   );
 }

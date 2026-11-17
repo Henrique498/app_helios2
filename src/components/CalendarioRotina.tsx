@@ -1,24 +1,40 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { useRotina } from '../contexts/RotinaContext';
 import { styles } from '../styles/DashBoard.styles';
+import { DiaSemana, NOMES_DIAS } from '../types/treinos';
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
-const ROTINA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sab'];
+const DIAS_KEYS: DiaSemana[] = [
+  'SEG',
+  'TER',
+  'QUA',
+  'QUI',
+  'SEX',
+  'SAB',
+  'DOM',
+];
 const NUMEROS = [29, 30, 31, ...Array.from({ length: 25 }, (_, i) => i + 1)];
 const SEMANAS = [0, 1, 2, 3].map((i) => NUMEROS.slice(i * 7, i * 7 + 7));
 
-const DIAS_VALIDOS_TREINO = ['SEG', 'TER', 'QUA', 'QUI', 'SEX'];
-
 export default function CalendarioRotina() {
-  const irParaTreino = (diaLabel: string) => {
-    const diaFormatado = diaLabel.toUpperCase();
+  const { rotina } = useRotina();
+  const [diaDescanso, setDiaDescanso] = useState<DiaSemana | null>(null);
 
-    if (DIAS_VALIDOS_TREINO.includes(diaFormatado)) {
+  const irParaTreino = (indexDia: number) => {
+    const diaKey = DIAS_KEYS[indexDia];
+    const temTreino = (rotina[diaKey]?.length || 0) > 0;
+
+    if (temTreino) {
+      setDiaDescanso(null);
       router.push({
         pathname: '/treino',
-        params: { dia: diaFormatado },
+        params: { dia: diaKey },
       });
+    } else {
+      setDiaDescanso((prev) => (prev === diaKey ? null : diaKey));
     }
   };
 
@@ -34,21 +50,26 @@ export default function CalendarioRotina() {
           </View>
         </View>
 
-        <View style={styles.calDireita}>
+        <TouchableOpacity
+          style={styles.calDireita}
+          onPress={() => router.push('/minha-rotina')}
+        >
           <Text style={styles.suaRotina}>Sua Rotina</Text>
-          <Ionicons name="calendar-outline" size={22} color="#FFFFFF" />
-        </View>
+          <Ionicons name="chevron-forward" size={16} color="#FFB800" />
+        </TouchableOpacity>
       </View>
 
+      {/* Linha dos dias da semana (Seg a Dom) */}
       <View style={styles.semana}>
-        {DIAS.map((dia) => {
-          const ativo = ROTINA.includes(dia);
+        {DIAS.map((dia, index) => {
+          const diaKey = DIAS_KEYS[index];
+          const ativo = (rotina[diaKey]?.length || 0) > 0;
+
           return (
             <TouchableOpacity
               key={dia}
               style={[styles.celula, ativo && styles.celulaAtiva]}
-              activeOpacity={0.7}
-              onPress={() => irParaTreino(dia)}
+              onPress={() => irParaTreino(index)}
             >
               <Text
                 style={[styles.celulaTexto, ativo && styles.celulaTextoAtivo]}
@@ -60,23 +81,58 @@ export default function CalendarioRotina() {
         })}
       </View>
 
-      {SEMANAS.map((semana, i) => (
-        <View key={i} style={styles.semana}>
-          {semana.map((numero, j) => {
-            const diaCorrespondente = DIAS[j];
+      {/* Grelha dos números do mês */}
+      {SEMANAS.map((semana, sIndex) => (
+        <View key={sIndex} style={styles.semana}>
+          {semana.map((numero, dIndex) => {
+            const diaKey = DIAS_KEYS[dIndex];
+            const ativo = (rotina[diaKey]?.length || 0) > 0;
+
             return (
               <TouchableOpacity
-                key={j}
-                style={styles.celula}
-                activeOpacity={0.7}
-                onPress={() => irParaTreino(diaCorrespondente)}
+                key={`${sIndex}-${dIndex}`}
+                style={[styles.celula, ativo && styles.celulaAtiva]}
+                onPress={() => irParaTreino(dIndex)}
               >
-                <Text style={styles.celulaTexto}>{numero}</Text>
+                <Text
+                  style={[styles.celulaTexto, ativo && styles.celulaTextoAtivo]}
+                >
+                  {numero}
+                </Text>
               </TouchableOpacity>
             );
           })}
         </View>
       ))}
+
+      {/* Card de descanso ao tocar em Sab ou Dom sem treino */}
+      {diaDescanso && (rotina[diaDescanso]?.length || 0) === 0 ? (
+        <View style={styles.descansoCard}>
+          <View style={styles.descansoInfo}>
+            <Ionicons name="bed-outline" size={22} color="#FFB800" />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.descansoTitulo}>
+                {NOMES_DIAS[diaDescanso]} é dia de descanso
+              </Text>
+              <Text style={styles.descansoSubtitulo}>
+                Não quer descansar? Adicione exercícios.
+              </Text>
+            </View>
+          </View>
+
+          <Pressable
+            style={styles.botaoAdicionarDescanso}
+            onPress={() =>
+              router.push({
+                pathname: '/adicionar-exercicio',
+                params: { dia: diaDescanso },
+              })
+            }
+          >
+            <Text style={styles.botaoAdicionarDescansoTexto}>+ Adicionar</Text>
+          </Pressable>
+        </View>
+      ) : null}
     </View>
   );
 }

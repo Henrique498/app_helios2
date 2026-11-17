@@ -8,15 +8,15 @@ import { formatarTempo } from '../utils/formatadores';
 
 type Estado = 'inicial' | 'ativo' | 'recarga';
 
-const DURACAO_CODIGO = 30; // segundos (simulação)
-const DURACAO_RECARGA = 20; // segundos (simulação)
+const DURACAO_CODIGO = 30; 
+const DURACAO_RECARGA = 20; 
 
 export default function DayShake() {
   const [estado, setEstado] = useState<Estado>('inicial');
   const [restante, setRestante] = useState(0);
   const [codigo, setCodigo] = useState('');
 
-  // 1) Enquanto não estiver "inicial", conta 1 segundo por vez
+  
   useEffect(() => {
     if (estado === 'inicial') return;
 
@@ -27,7 +27,7 @@ export default function DayShake() {
     return () => clearInterval(id);
   }, [estado]);
 
-  // 2) Quando o tempo zera, passa para a próxima fase
+  
   useEffect(() => {
     if (estado === 'inicial' || restante > 0) return;
 

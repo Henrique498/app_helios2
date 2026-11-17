@@ -151,4 +151,92 @@ export const styles = StyleSheet.create({
   botaoPrincipalTexto: { color: '#000000', fontSize: 18 },
   cancelar: { alignSelf: 'center', padding: 14 },
   cancelarTexto: { color: '#A0AEC0', fontSize: 14, fontWeight: '700' },
+
+ 
+  menuOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingTop: 88,
+    paddingLeft: 18,
+  },
+  menuBox: {
+    backgroundColor: '#0D1B2A',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#1E2D3D',
+    paddingVertical: 6,
+    minWidth: 170,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  menuItemSairTexto: {
+    color: '#FF4D4D',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+
+  celulaComTreino: {
+    backgroundColor: '#FFB800',
+  },
+  celulaDescanso: {
+    backgroundColor: '#131F36',
+    borderWidth: 1,
+    borderColor: '#1E2D3D',
+  },
+  celulaTextoDescanso: {
+    color: '#6B7385',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  descansoCard: {
+    marginTop: 8,
+    backgroundColor: '#0A0F1D',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#1E2D3D',
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  descansoInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+  },
+  descansoTitulo: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  descansoSubtitulo: {
+    color: '#A0AEC0',
+    fontSize: 11,
+    marginTop: 2,
+  },
+  botaoAdicionarDescanso: {
+    backgroundColor: '#FFB800',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  botaoAdicionarDescansoTexto: {
+    color: '#000000',
+    fontSize: 12,
+    fontWeight: '700',
+  },
 });

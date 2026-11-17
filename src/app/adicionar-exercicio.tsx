@@ -1,0 +1,205 @@
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useState } from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import { styles } from '../styles/personalizacao';
+import { DiaSemana, GRUPOS_MUSCULARES } from '../types/treinos';
+
+export default function AdicionarExercicioScreen() {
+  const { dia = 'SEG' } = useLocalSearchParams<{ dia?: DiaSemana }>();
+
+  const [abaAtiva, setAbaAtiva] = useState<'exercicios' | 'personalizado'>(
+    'exercicios'
+  );
+  const [busca, setBusca] = useState('');
+  
+  const [grupoExpandido, setGrupoExpandido] = useState<string | null>('peito');
+  const [nomePersonalizado, setNomePersonalizado] = useState('');
+
+  const irParaConfigurar = (nomeExercicio: string, grupo: string) => {
+    router.push({
+      pathname: '/configurar-exercicio',
+      params: {
+        dia,
+        nome: nomeExercicio,
+        grupo,
+      },
+    });
+  };
+
+  const gruposFiltrados = GRUPOS_MUSCULARES.filter(
+    (g) =>
+      g.nome.toLowerCase().includes(busca.toLowerCase()) ||
+      g.exercicios.some((ex) => ex.toLowerCase().includes(busca.toLowerCase()))
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.topBar}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+          <Text style={styles.screenTitle}>Adicionar Exercício</Text>
+        </View>
+
+        {/* Barra de Busca */}
+        <View style={styles.searchBox}>
+          <Ionicons name="search" size={18} color="#6B7385" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Buscar exercício..."
+            placeholderTextColor="#6B7385"
+            value={busca}
+            onChangeText={setBusca}
+          />
+        </View>
+
+        {/* Seletor Exercícios / Personalizado */}
+        <View style={styles.segmentRow}>
+          <TouchableOpacity
+            style={[
+              styles.segmentBtn,
+              abaAtiva === 'exercicios' && styles.segmentBtnActive,
+            ]}
+            onPress={() => setAbaAtiva('exercicios')}
+          >
+            <Text
+              style={[
+                styles.segmentText,
+                abaAtiva === 'exercicios' && styles.segmentTextActive,
+              ]}
+            >
+              Exercícios
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.segmentBtn,
+              abaAtiva === 'personalizado' && styles.segmentBtnActive,
+            ]}
+            onPress={() => setAbaAtiva('personalizado')}
+          >
+            <Text
+              style={[
+                styles.segmentText,
+                abaAtiva === 'personalizado' && styles.segmentTextActive,
+              ]}
+            >
+              Personalizado
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {abaAtiva === 'exercicios' ? (
+          gruposFiltrados.map((grupo) => {
+            const aberto =
+              grupoExpandido === grupo.id || busca.trim().length > 0;
+            return (
+              <View key={grupo.id}>
+                <TouchableOpacity
+                  style={styles.groupCard}
+                  activeOpacity={0.8}
+                  onPress={() => setGrupoExpandido(aberto ? null : grupo.id)}
+                >
+                  <View style={styles.groupIconCircle}>
+                    <MaterialCommunityIcons
+                      name={grupo.icone as any}
+                      size={22}
+                      color="#9BA3B4"
+                    />
+                  </View>
+
+                  <View style={styles.groupInfo}>
+                    <Text style={styles.groupTitle}>{grupo.nome}</Text>
+                    <Text style={styles.groupExamples}>{grupo.exemplos}</Text>
+                  </View>
+
+                  <Ionicons
+                    name={aberto ? 'chevron-down' : 'chevron-forward'}
+                    size={18}
+                    color="#8E96A4"
+                  />
+                </TouchableOpacity>
+
+                {aberto &&
+                  grupo.exercicios
+                    .filter(
+                      (ex) =>
+                        ex.toLowerCase().includes(busca.toLowerCase()) ||
+                        grupo.nome.toLowerCase().includes(busca.toLowerCase())
+                    )
+                    .map((exercicio) => (
+                      <TouchableOpacity
+                        key={exercicio}
+                        style={[
+                          styles.groupCard,
+                          {
+                            marginLeft: 16,
+                            paddingVertical: 12,
+                            borderColor: '#2A374A',
+                          },
+                        ]}
+                        activeOpacity={0.7}
+                        onPress={() => irParaConfigurar(exercicio, grupo.nome)}
+                      >
+                        <Text
+                          style={[styles.groupTitle, { flex: 1, fontSize: 14 }]}
+                        >
+                          {exercicio}
+                        </Text>
+                        <Ionicons
+                          name="chevron-forward"
+                          size={18}
+                          color="#F5B800"
+                        />
+                      </TouchableOpacity>
+                    ))}
+              </View>
+            );
+          })
+        ) : (
+          <View style={styles.customFormCard}>
+            <Text style={styles.fieldLabel}>
+              Nome do Exercício Personalizado
+            </Text>
+            <View style={styles.searchBox}>
+              <TextInput
+                style={[styles.searchInput, { marginLeft: 0 }]}
+                placeholder="Ex.: Elevação Pélvica na Máquina"
+                placeholderTextColor="#6B7385"
+                value={nomePersonalizado}
+                onChangeText={setNomePersonalizado}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.primaryButton}
+              activeOpacity={0.8}
+              onPress={() => {
+                const nomeFinal =
+                  nomePersonalizado.trim() || 'Exercício Personalizado';
+                irParaConfigurar(nomeFinal, 'Personalizado');
+              }}
+            >
+              <Text style={styles.primaryButtonText}>Configurar Exercício</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

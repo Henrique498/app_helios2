@@ -1,13 +1,13 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import AlterarCartaoModal from '../components/AlterarCartaoModal';
 import CalendarioRotina from '../components/CalendarioRotina';
 import DayShake from '../components/DayShake';
 import { PLANOS } from '../data/planos';
 import { styles } from '../styles/DashBoard.styles';
-    
+
 const TEXTO_GERENCIAR: Record<string, string> = {
   basic: 'Gerenciar Assinatura',
   fit: 'Gerenciar Plano',
@@ -23,8 +23,14 @@ export default function Dashboard() {
 
   const [cartaoFinal, setCartaoFinal] = useState('4566');
   const [modalCartao, setModalCartao] = useState(false);
+  const [menuAberto, setMenuAberto] = useState(false);
 
   const plano = PLANOS.find((p) => p.id === planoId) ?? PLANOS[0];
+
+  function sairDaConta() {
+    setMenuAberto(false);
+    router.replace('/LoginScreen');
+  }
 
   function salvarCartao(final: string, bandeira: string) {
     setCartaoFinal(final);
@@ -53,7 +59,13 @@ export default function Dashboard() {
   return (
     <ScrollView style={styles.tela} contentContainerStyle={styles.conteudo}>
       <View style={styles.cabecalho}>
-        <Ionicons name="menu" size={26} color="#FFFFFF" />
+        <Pressable
+          onPress={() => setMenuAberto(true)}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Ionicons name="menu" size={26} color="#FFFFFF" />
+        </Pressable>
+
         <Text style={styles.logo}>
           Helios<Text style={styles.logoGym}>Gym</Text>
         </Text>
@@ -70,10 +82,31 @@ export default function Dashboard() {
 
         <Pressable
           style={styles.botaoTreino}
-          onPress={() => console.log('TODO: abrir tela de personalização')}
+          onPress={() => router.push('/minha-rotina')}
         >
           <MaterialCommunityIcons name="dumbbell" size={30} color="#000000" />
           <Text style={styles.botaoTreinoTexto}>Personalizar seu treino</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => router.push('/evolucao')}
+          style={{
+            backgroundColor: '#0D1B2A',
+            borderWidth: 1,
+            borderColor: '#FFB800',
+            borderRadius: 12,
+            height: 48,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            marginTop: 10,
+          }}
+        >
+          <Ionicons name="stats-chart" size={18} color="#FFB800" />
+          <Text style={{ color: '#FFB800', fontSize: 15, fontWeight: '700' }}>
+            Evolução, Periodização & Amigos
+          </Text>
         </Pressable>
 
         {plano.id === 'black' ? <DayShake /> : null}
@@ -135,6 +168,25 @@ export default function Dashboard() {
           <Text style={styles.cancelarTexto}>Cancelar plano</Text>
         </Pressable>
       </View>
+
+      <Modal
+        visible={menuAberto}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setMenuAberto(false)}
+      >
+        <Pressable
+          style={styles.menuOverlay}
+          onPress={() => setMenuAberto(false)}
+        >
+          <View style={styles.menuBox}>
+            <Pressable style={styles.menuItem} onPress={sairDaConta}>
+              <Ionicons name="log-out-outline" size={20} color="#FF4D4D" />
+              <Text style={styles.menuItemSairTexto}>Sair</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
 
       <AlterarCartaoModal
         visible={modalCartao}

@@ -1,75 +1,205 @@
-import { router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-  Image,
+  Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
+  ScrollView,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import { styles } from '../styles/LoginScreen.styles';
 
 export default function LoginScreen() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  function handleLogin() {
-    console.log('login', email, senha);
-    router.replace('/dashboard');
+  function aoEntrar() {
+    if (!email.trim() || !senha.trim()) {
+      Alert.alert('Atenção', 'Preencha o e-mail e a senha para entrar.');
+      return;
+    }
+
+    
+    if (senha === '123456') {
+      router.replace('/cadastro-intrutor');
+      return;
+    }
+
+    
+    if (senha === '1234567') {
+      router.replace('/controle-matriculas');
+      return;
+    }
+
+    
+    router.replace({
+      pathname: '/dashboard',
+      params: { plano: 'black', nome: 'Aluno' },
+    });
   }
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={{ flex: 1, backgroundColor: '#0A0F1D' }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar style="light" />
-
-      <View style={styles.content}>
-        <Image
-          source={require('../../assets/logo-helios.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-
-        <Text style={styles.title}>Bem-vindo de volta.</Text>
-        <Text style={styles.subtitle}>Acesse sua conta para continuar</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Digite seu e-mail"
-          placeholderTextColor="#6B7385"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={email}
-          onChangeText={setEmail}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Digite sua senha"
-          placeholderTextColor="#6B7385"
-          secureTextEntry
-          value={senha}
-          onChangeText={setSenha}
-        />
-
-        <TouchableOpacity activeOpacity={0.7}>
-          <Text style={styles.registerLink}>Cadastre-se aqui.</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          activeOpacity={0.8}
-          onPress={handleLogin}
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          paddingHorizontal: 24,
+          paddingVertical: 40,
+        }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Pressable
+          onPress={() => router.replace('/')}
+          style={{ position: 'absolute', top: 50, left: 20, padding: 6 }}
         >
-          <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
-      </View>
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+        </Pressable>
+
+        <View style={{ alignItems: 'center', marginBottom: 32 }}>
+          <MaterialCommunityIcons name="arm-flex" size={48} color="#FFB800" />
+          <Text
+            style={{
+              color: '#FFFFFF',
+              fontSize: 34,
+              fontWeight: '800',
+              marginTop: 8,
+            }}
+          >
+            Helios<Text style={{ color: '#FFB800' }}>Gym</Text>
+          </Text>
+          <Text style={{ color: '#94A3B8', fontSize: 14, marginTop: 6 }}>
+            Acesse sua conta para continuar
+          </Text>
+        </View>
+
+        <Text
+          style={{
+            color: '#E2E8F0',
+            fontSize: 13,
+            fontWeight: '600',
+            marginBottom: 6,
+          }}
+        >
+          E-mail
+        </Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: '#111827',
+            borderWidth: 1,
+            borderColor: '#1E293B',
+            borderRadius: 12,
+            height: 52,
+            paddingHorizontal: 14,
+            marginBottom: 16,
+          }}
+        >
+          <Ionicons
+            name="mail-outline"
+            size={20}
+            color="#64748B"
+            style={{ marginRight: 10 }}
+          />
+          <TextInput
+            style={{ flex: 1, color: '#FFFFFF', fontSize: 15 }}
+            placeholder="Digite seu e-mail"
+            placeholderTextColor="#64748B"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
+        </View>
+
+        <Text
+          style={{
+            color: '#E2E8F0',
+            fontSize: 13,
+            fontWeight: '600',
+            marginBottom: 6,
+          }}
+        >
+          Senha
+        </Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: '#111827',
+            borderWidth: 1,
+            borderColor: '#1E293B',
+            borderRadius: 12,
+            height: 52,
+            paddingHorizontal: 14,
+            marginBottom: 24,
+          }}
+        >
+          <Ionicons
+            name="lock-closed-outline"
+            size={20}
+            color="#64748B"
+            style={{ marginRight: 10 }}
+          />
+          <TextInput
+            style={{ flex: 1, color: '#FFFFFF', fontSize: 15 }}
+            placeholder="Digite sua senha"
+            placeholderTextColor="#64748B"
+            secureTextEntry={!mostrarSenha}
+            value={senha}
+            onChangeText={setSenha}
+          />
+          <Pressable onPress={() => setMostrarSenha(!mostrarSenha)}>
+            <Ionicons
+              name={mostrarSenha ? 'eye-outline' : 'eye-off-outline'}
+              size={20}
+              color="#94A3B8"
+            />
+          </Pressable>
+        </View>
+
+        <Pressable
+          onPress={aoEntrar}
+          style={{
+            backgroundColor: '#FFB800',
+            borderRadius: 12,
+            height: 54,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{ color: '#0A0F1D', fontSize: 17, fontWeight: '800' }}>
+            Entrar
+          </Text>
+        </Pressable>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginTop: 22,
+            gap: 6,
+          }}
+        >
+          <Text style={{ color: '#94A3B8', fontSize: 14 }}>
+            Ainda não tem conta?
+          </Text>
+          <Pressable onPress={() => router.push('/cadastro')}>
+            <Text style={{ color: '#FFB800', fontSize: 14, fontWeight: '700' }}>
+              Cadastre-se
+            </Text>
+          </Pressable>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

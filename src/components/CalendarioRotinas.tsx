@@ -1,7 +1,23 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useRotina } from '../contexts/RotinaContext';
 import { styles } from '../styles/treinos.styles';
 import { DiaSemana, Exercicio, NOMES_DIAS } from '../types/treinos';
+import {
+  calcular1RM,
+  calcularTonelagemExercicio,
+  extrairRepsNumericas,
+} from '../utils/metricasTreino';
 
 interface CalendarioRotinasProps {
   diaSelecionado: DiaSemana;
@@ -12,7 +28,7 @@ interface CalendarioRotinasProps {
   onEditarDia?: () => void;
 }
 
-const DIAS: DiaSemana[] = ['SEG', 'TER', 'QUA', 'QUI', 'SEX'];
+const DIAS: DiaSemana[] = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'];
 
 export function CalendarioRotinas({
   diaSelecionado,
@@ -22,17 +38,81 @@ export function CalendarioRotinas({
   onAbrirModalAdicionar,
   onEditarDia,
 }: CalendarioRotinasProps) {
+  const router = useRouter();
+  const { editarExercicio, concluirTreino, historicoCargas } = useRotina();
+
+  const [expandidoId, setExpandidoId] = useState<string | null>(null);
+  const [concluidosIds, setConcluidosIds] = useState<string[]>([]);
+
+  // Estados temporários de edição do exercício clicado
+  const [editSeries, setEditSeries] = useState('');
+  const [editReps, setEditReps] = useState('');
+  const [editCarga, setEditCarga] = useState('');
+
+  function aoClicarExercicio(item: Exercicio) {
+    if (expandidoId === item.id) {
+      setExpandidoId(null);
+      return;
+    }
+    setExpandidoId(item.id);
+    setEditSeries(item.series || '');
+    setEditReps(item.repeticoes || '');
+    setEditCarga(item.carga || '0');
+  }
+
+  function salvarEdicao(id: string) {
+    editarExercicio(diaSelecionado, id, {
+      series: editSeries.trim() || '3',
+      repeticoes: editReps.trim() || '12',
+      carga: editCarga.trim() || '0',
+    });
+    Alert.alert('Salvo!', 'Treino atualizado com sucesso.');
+  }
+
+  function alternarConcluirExercicio(id: string) {
+    setConcluidosIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  }
+
+  function aoConcluirTreinoCompleto() {
+    if (exercicios.length === 0) {
+      Alert.alert('Treino vazio', 'Adicione exercícios antes de concluir.');
+      return;
+    }
+
+    const sessao = concluirTreino(diaSelecionado, 2700);
+    setConcluidosIds(exercicios.map((e) => e.id));
+
+    Alert.alert(
+      'Treino Concluído!',
+      `Volume Load total: ${sessao.tonelagemTotal.toLocaleString('pt-BR')} kg\nRepetições totais: ${sessao.repeticoesTotais}`,
+      [
+        { text: 'Ver Evolução', onPress: () => router.push('/evolucao') },
+        { text: 'OK' },
+      ]
+    );
+  }
+
   return (
     <>
-      <View style={styles.daysRow}>
+      {/* Abas dos dias */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
+        contentContainerStyle={[styles.daysRow, { paddingRight: 16 }]}
+      >
         {DIAS.map((dia) => {
           const ativo = diaSelecionado === dia;
           return (
             <TouchableOpacity
               key={dia}
               style={[styles.dayTab, ativo && styles.dayTabActive]}
-              onPress={() => onSelectDia(dia)}
-              activeOpacity={0.8}
+              onPress={() => {
+                setExpandidoId(null);
+                onSelectDia(dia);
+              }}
             >
               <Text
                 style={[styles.dayTabText, ativo && styles.dayTabTextActive]}
@@ -42,55 +122,209 @@ export function CalendarioRotinas({
             </TouchableOpacity>
           );
         })}
-      </View>
+      </ScrollView>
 
+      {/* Card principal igual ao protótipo */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardHeaderTitle}>
-            {NOMES_DIAS[diaSelecionado]}
-          </Text>
-          <TouchableOpacity onPress={onEditarDia}>
+          <Text style={styles.cardTitle}>{NOMES_DIAS[diaSelecionado]}</Text>
+
+          <TouchableOpacity
+            onPress={onEditarDia || (() => router.push('/evolucao'))}
+            activeOpacity={0.7}
+          >
             <MaterialCommunityIcons name="pencil" size={20} color="#0A0E17" />
           </TouchableOpacity>
         </View>
 
-        <View style={styles.exerciseList}>
-          {exercicios.map((item, index) => (
-            <View key={item.id} style={styles.exerciseRow}>
-              <MaterialCommunityIcons
-                name="drag-vertical"
-                size={20}
-                color="#6B7385"
-                style={styles.dragIcon}
-              />
+        {exercicios.length === 0 ? (
+          <Text style={styles.emptyText}>
+            Nenhum exercício cadastrado para este dia.
+          </Text>
+        ) : (
+          exercicios.map((item, index) => {
+            const aberto = expandidoId === item.id;
+            const concluido = concluidosIds.includes(item.id);
+            const cargaNum = Number(item.carga) || 0;
+            const repsNum = extrairRepsNumericas(item.repeticoes);
+            const tonEx = calcularTonelagemExercicio(item);
+            const oneRM = calcular1RM(cargaNum, repsNum);
+            const perc1RM =
+              oneRM > 0 ? Math.round((cargaNum / oneRM) * 100) : 0;
+            const pesosAnteriores = historicoCargas[item.nome] || [];
 
-              <View style={styles.numberBadge}>
-                <Text style={styles.numberText}>{index + 1}</Text>
+            return (
+              <View key={item.id} style={styles.itemWrapper}>
+                {/* Linha principal (clicar expande) */}
+                <Pressable
+                  onPress={() => aoClicarExercicio(item)}
+                  style={styles.exerciseRow}
+                >
+                  <MaterialCommunityIcons
+                    name="drag-vertical"
+                    size={20}
+                    color="#64748B"
+                  />
+
+                  <View
+                    style={[
+                      styles.numeroCirculo,
+                      concluido && styles.numeroCirculoConcluido,
+                    ]}
+                  >
+                    {concluido ? (
+                      <Ionicons name="checkmark" size={16} color="#0A0E17" />
+                    ) : (
+                      <Text style={styles.numeroTexto}>{index + 1}</Text>
+                    )}
+                  </View>
+
+                  <View style={styles.exerciseInfo}>
+                    <Text
+                      style={[
+                        styles.exerciseName,
+                        concluido && {
+                          textDecorationLine: 'line-through',
+                          color: '#94A3B8',
+                        },
+                      ]}
+                    >
+                      {item.nome}
+                    </Text>
+                    <Text style={styles.exerciseDetails}>
+                      {item.series} séries • {item.repeticoes} repetições
+                      {cargaNum > 0 ? ` • ${cargaNum}kg` : ''}
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={() => onRemoverExercicio(item.id)}
+                    hitSlop={10}
+                  >
+                    <Ionicons name="trash-outline" size={20} color="#94A3B8" />
+                  </TouchableOpacity>
+                </Pressable>
+
+                {/* Gaveta expandida ao clicar no exercício */}
+                {aberto && (
+                  <View style={styles.gavetaExpandida}>
+                    <Text style={styles.gavetaTitulo}>
+                      Editar exercício & detalhes
+                    </Text>
+
+                    {/* Campos editáveis: Séries, Reps e Peso */}
+                    <View style={styles.inputsLinha}>
+                      <View style={styles.campoBox}>
+                        <Text style={styles.campoLabel}>Séries</Text>
+                        <TextInput
+                          style={styles.campoInput}
+                          keyboardType="numeric"
+                          value={editSeries}
+                          onChangeText={setEditSeries}
+                        />
+                      </View>
+
+                      <View style={styles.campoBox}>
+                        <Text style={styles.campoLabel}>Repetições</Text>
+                        <TextInput
+                          style={styles.campoInput}
+                          value={editReps}
+                          onChangeText={setEditReps}
+                        />
+                      </View>
+
+                      <View style={styles.campoBox}>
+                        <Text style={styles.campoLabel}>Peso (kg)</Text>
+                        <TextInput
+                          style={styles.campoInput}
+                          keyboardType="numeric"
+                          value={editCarga}
+                          onChangeText={setEditCarga}
+                        />
+                      </View>
+                    </View>
+
+                    {/* Atalhos rápidos para subir/descer peso */}
+                    <View style={styles.ajusteCargaRow}>
+                      <Pressable
+                        style={styles.ajusteBtn}
+                        onPress={() =>
+                          setEditCarga((c) =>
+                            String(Math.max(0, (Number(c) || 0) - 2.5))
+                          )
+                        }
+                      >
+                        <Text style={styles.ajusteBtnTexto}>- 2.5 kg</Text>
+                      </Pressable>
+
+                      <Pressable
+                        style={styles.ajusteBtn}
+                        onPress={() =>
+                          setEditCarga((c) => String((Number(c) || 0) + 2.5))
+                        }
+                      >
+                        <Text style={styles.ajusteBtnTexto}>+ 2.5 kg</Text>
+                      </Pressable>
+                    </View>
+
+                    {/* Métricas e histórico */}
+                    <View style={styles.metricasBox}>
+                      <Text style={styles.metricaTexto}>
+                        Volume Load:{' '}
+                        <Text style={styles.metricaDestaque}>{tonEx} kg</Text> •
+                        1RM est.:{' '}
+                        <Text style={styles.metricaDestaque}>
+                          {oneRM} kg ({perc1RM}%)
+                        </Text>
+                      </Text>
+                      <Text style={styles.metricaTexto}>
+                        Histórico:{' '}
+                        {pesosAnteriores.length > 0
+                          ? pesosAnteriores
+                              .map((h) => `${h.data}: ${h.carga}kg`)
+                              .join(' → ')
+                          : `${cargaNum}kg`}
+                      </Text>
+                    </View>
+
+                    {/* Botões Salvar Edição e Concluir Exercício */}
+                    <View style={styles.acoesGavetaRow}>
+                      <Pressable
+                        style={styles.btnSalvarEdicao}
+                        onPress={() => salvarEdicao(item.id)}
+                      >
+                        <Text style={styles.btnSalvarEdicaoTexto}>Salvar</Text>
+                      </Pressable>
+
+                      <Pressable
+                        style={[
+                          styles.btnConcluirEx,
+                          concluido && { backgroundColor: '#15803D' },
+                        ]}
+                        onPress={() => alternarConcluirExercicio(item.id)}
+                      >
+                        <Ionicons
+                          name={
+                            concluido
+                              ? 'checkmark-circle'
+                              : 'checkmark-circle-outline'
+                          }
+                          size={18}
+                          color="#FFFFFF"
+                        />
+                        <Text style={styles.btnConcluirExTexto}>
+                          {concluido ? 'Concluído' : 'Concluir Exercício'}
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                )}
               </View>
+            );
+          })
+        )}
 
-              <View style={styles.exerciseInfo}>
-                <Text style={styles.exerciseName}>{item.nome}</Text>
-                <Text style={styles.exerciseMeta}>
-                  {item.series} séries • {item.repeticoes} repetições
-                </Text>
-              </View>
-
-              <TouchableOpacity
-                onPress={() => onRemoverExercicio(item.id)}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Ionicons name="trash-outline" size={20} color="#8E96A4" />
-              </TouchableOpacity>
-            </View>
-          ))}
-
-          {exercicios.length === 0 && (
-            <Text style={styles.emptyText}>
-              Nenhum exercício cadastrado para este dia.
-            </Text>
-          )}
-        </View>
-
+        {/* Botão + Adicionar Exercício */}
         <TouchableOpacity
           style={styles.addButton}
           onPress={onAbrirModalAdicionar}
@@ -98,6 +332,18 @@ export function CalendarioRotinas({
         >
           <Text style={styles.addButtonText}>+ Adicionar Exercício.</Text>
         </TouchableOpacity>
+
+        {/* Botão Concluir Treino Completo */}
+        {exercicios.length > 0 && (
+          <TouchableOpacity
+            style={styles.concluirTreinoButton}
+            onPress={aoConcluirTreinoCompleto}
+            activeOpacity={0.85}
+          >
+            <Ionicons name="trophy-outline" size={20} color="#0A0E17" />
+            <Text style={styles.concluirTreinoButtonText}>Concluir Treino</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </>
   );

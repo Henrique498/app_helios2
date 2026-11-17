@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.45)', // Camada transparente para dar contraste às letras
+    backgroundColor: 'rgba(0, 0, 0, 0.45)', 
   },
   content: {
     flex: 1,

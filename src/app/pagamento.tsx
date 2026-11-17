@@ -1,7 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  BackHandler,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import FormCartao from '../components/FormCartao';
 import OpcaoPagamento from '../components/OpcaoPagamento';
 import { styles } from '../styles/Pagamento.styles';
@@ -12,6 +19,20 @@ export default function Pagamento() {
   const router = useRouter();
   const { plano } = useLocalSearchParams<{ plano?: string }>();
   const [metodo, setMetodo] = useState<Metodo | null>(null);
+
+  function handleVoltar() {
+    if (metodo !== null) {
+      setMetodo(null);
+      return true;
+    }
+    router.back();
+    return true;
+  }
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', handleVoltar);
+    return () => sub.remove();
+  }, [metodo]);
 
   function finalizar() {
     Alert.alert('Compra finalizada', 'Seu pagamento foi enviado!', [
@@ -25,6 +46,7 @@ export default function Pagamento() {
       },
     ]);
   }
+
   return (
     <ScrollView
       style={styles.tela}
@@ -32,7 +54,7 @@ export default function Pagamento() {
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.topo}>
-        <Pressable onPress={() => router.back()} style={styles.voltar}>
+        <Pressable onPress={handleVoltar} style={styles.voltar}>
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </Pressable>
 

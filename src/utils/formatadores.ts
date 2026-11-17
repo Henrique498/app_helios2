@@ -19,6 +19,29 @@ export function formatarCPF(texto: string) {
   return `${n.slice(0, 3)}.${n.slice(3, 6)}.${n.slice(6, 9)}-${n.slice(9)}`;
 }
 
+export function formatarCREF(texto: string) {
+  const limpo = texto
+    .replace(/^CREF\s*/i, '')
+    .replace(/[^0-9a-zA-Z]/g, '')
+    .toUpperCase();
+
+  if (!limpo) return '';
+
+  const numeros = apenasNumeros(limpo).slice(0, 6);
+
+  const letras =
+    numeros.length === 6 ? limpo.replace(/[0-9]/g, '').slice(0, 3) : '';
+
+  let resultado = `CREF ${numeros}`;
+  if (letras.length >= 1) {
+    resultado += `-${letras[0]}`;
+  }
+  if (letras.length >= 2) {
+    resultado += `/${letras.slice(1, 3)}`;
+  }
+  return resultado;
+}
+
 export function formatarTelefone(texto: string) {
   const n = apenasNumeros(texto).slice(0, 11);
 

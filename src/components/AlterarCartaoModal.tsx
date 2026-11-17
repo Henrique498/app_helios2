@@ -47,7 +47,7 @@ function validadeOk(v: string) {
   const ano = 2000 + Number(v.slice(3));
   if (mes < 1 || mes > 12) return false;
   const hoje = new Date();
-  // válido até o último dia do mês informado
+
   return (
     ano > hoje.getFullYear() ||
     (ano === hoje.getFullYear() && mes >= hoje.getMonth() + 1)
@@ -90,8 +90,6 @@ export default function AlterarCartaoModal({
       return setErro('Validade inválida ou vencida (MM/AA).');
     if (cvv.length < 3) return setErro('CVV inválido.');
 
-    // Aqui entraria a chamada à API/gateway de pagamento.
-    // Na simulação, só devolvemos os 4 últimos dígitos.
     onSalvar(digitos.slice(-4), bandeira);
     limpar();
   }
