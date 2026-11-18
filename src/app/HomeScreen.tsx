@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from '../styles/HomeScreen.styles';
 
 import { useRouter } from 'expo-router';
@@ -26,18 +26,11 @@ export default function HomeScreen() {
           nativeControls={false}
         />
       </View>
-      {/* Camada escura de sobreposição */}
       <View style={styles.overlay} pointerEvents="none" />
 
-      {/* Conteúdo principal */}
       <View style={styles.content}>
-        <View style={styles.header}>
-          <Image
-            source={require('../../assets/logo-helios.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
+        {/* Header limpo (a logo oficial é gerada universalmente pelo _layout.tsx) */}
+        <View style={styles.header} />
 
         <View style={styles.card}>
           <Text style={styles.title}>Sua evolução começa aqui</Text>
@@ -45,7 +38,11 @@ export default function HomeScreen() {
             Acompanhe seus treinos, planos e evolução em um só lugar.
           </Text>
 
-          <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => router.push('/cadastro')}>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.8}
+            onPress={() => router.push('/cadastro')}
+          >
             <Text style={styles.buttonText}>COMEÇAR AGORA</Text>
           </TouchableOpacity>
 

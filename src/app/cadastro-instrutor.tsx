@@ -1,4 +1,4 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -104,12 +104,10 @@ export default function CadastroInstrutorScreen() {
         </Pressable>
       </View>
 
-      <View style={styles.logoContainer}>
-        <Text style={styles.logoTexto}>Helios</Text>
-        <MaterialCommunityIcons name="arm-flex" size={32} color="#FFB800" />
-      </View>
-
-      <Text style={styles.tituloPagina}>Painel do Gestor</Text>
+      {/* A logo oficial é gerada universalmente pelo _layout.tsx */}
+      <Text style={[styles.tituloPagina, { marginTop: 16 }]}>
+        Painel do Gestor
+      </Text>
 
       <Text style={styles.secaoTitulo}>DADOS PESSOAIS</Text>
       <View style={styles.inputBox}>
@@ -158,7 +156,6 @@ export default function CadastroInstrutorScreen() {
         />
       </View>
 
-      {/* Dropdown de Especialidades */}
       <Pressable
         style={styles.inputBox}
         onPress={() => setModalEspecialidades(true)}
@@ -229,7 +226,6 @@ export default function CadastroInstrutorScreen() {
         <Text style={styles.botaoPrincipalTexto}>Cadastrar Instrutor</Text>
       </Pressable>
 
-      {/* Modal do Dropdown de Especialidades */}
       <Modal
         visible={modalEspecialidades}
         transparent

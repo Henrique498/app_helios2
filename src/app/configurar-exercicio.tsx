@@ -35,6 +35,7 @@ export default function ConfigurarExercicioScreen() {
 
   const handleSalvar = () => {
     adicionarExercicio(dia, {
+      id: Date.now().toString(),
       nome,
       grupo,
       series: String(series),

@@ -1,4 +1,4 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -23,20 +23,14 @@ export default function LoginScreen() {
       Alert.alert('Atenção', 'Preencha o e-mail e a senha para entrar.');
       return;
     }
-
-    
     if (senha === '123456') {
-      router.replace('/cadastro-intrutor');
+      router.replace('/cadastro-instrutor');
       return;
     }
-
-    
     if (senha === '1234567') {
       router.replace('/controle-matriculas');
       return;
     }
-
-    
     router.replace({
       pathname: '/dashboard',
       params: { plano: 'black', nome: 'Aluno' },
@@ -59,24 +53,14 @@ export default function LoginScreen() {
       >
         <Pressable
           onPress={() => router.replace('/')}
-          style={{ position: 'absolute', top: 50, left: 20, padding: 6 }}
+          style={{ position: 'absolute', top: 16, left: 20, padding: 6 }}
         >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </Pressable>
 
-        <View style={{ alignItems: 'center', marginBottom: 32 }}>
-          <MaterialCommunityIcons name="arm-flex" size={48} color="#FFB800" />
-          <Text
-            style={{
-              color: '#FFFFFF',
-              fontSize: 34,
-              fontWeight: '800',
-              marginTop: 8,
-            }}
-          >
-            Helios<Text style={{ color: '#FFB800' }}>Gym</Text>
-          </Text>
-          <Text style={{ color: '#94A3B8', fontSize: 14, marginTop: 6 }}>
+        {/* Espaçamento para a logo universal do _layout.tsx não sobrepor o subtítulo */}
+        <View style={{ alignItems: 'center', marginBottom: 28, marginTop: 40 }}>
+          <Text style={{ color: '#94A3B8', fontSize: 14, marginTop: 12 }}>
             Acesse sua conta para continuar
           </Text>
         </View>

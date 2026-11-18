@@ -1,4 +1,4 @@
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
@@ -77,14 +77,10 @@ export default function ControleMatriculasScreen() {
           </Pressable>
         </View>
 
-        <View style={styles.logoContainer}>
-          <MaterialCommunityIcons name="arm-flex" size={34} color="#FFB800" />
-          <Text style={styles.logoTexto}>
-            Helios<Text style={{ color: '#FFB800' }}>Gym</Text>
-          </Text>
-        </View>
-
-        <Text style={styles.tituloPagina}>Controle de Matrículas</Text>
+        {/* A logo compacta oficial é gerada universalmente pelo _layout.tsx */}
+        <Text style={[styles.tituloPagina, { marginTop: 16 }]}>
+          Controle de Matrículas
+        </Text>
 
         <View style={styles.buscaBox}>
           <TextInput
