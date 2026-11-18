@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { emailValido } from '../utils/validadores';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -21,6 +22,13 @@ export default function LoginScreen() {
   function aoEntrar() {
     if (!email.trim() || !senha.trim()) {
       Alert.alert('Atenção', 'Preencha o e-mail e a senha para entrar.');
+      return;
+    }
+    if (!emailValido(email)) {
+      Alert.alert(
+        'E-mail inválido',
+        'Digite um e-mail válido, por exemplo: nome@email.com'
+      );
       return;
     }
     if (senha === '123456') {
@@ -100,6 +108,7 @@ export default function LoginScreen() {
             placeholderTextColor="#64748B"
             keyboardType="email-address"
             autoCapitalize="none"
+            autoCorrect={false}
             value={email}
             onChangeText={setEmail}
           />

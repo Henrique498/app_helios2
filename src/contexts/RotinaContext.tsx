@@ -137,7 +137,6 @@ export function RotinaProvider({ children }: { children: React.ReactNode }) {
     }));
   }
 
-  // 👇 AQUI ENTRA A FUNÇÃO editarExercicio
   function editarExercicio(
     dia: DiaSemana,
     id: string,

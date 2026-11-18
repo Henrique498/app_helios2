@@ -7,8 +7,8 @@ import {
   formatarCNPJ,
   formatarCPF,
   formatarNumeroCartao,
-  formatarValidade,
 } from '../utils/formatadores';
+import { handlerValidade, validadeValida } from '../utils/validadores';
 import CampoTexto from './CampoTexto';
 
 type Props = {
@@ -40,14 +40,13 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
   }
 
   function validar(): string | null {
-    const mes = Number(validade.slice(0, 2));
     const tamanhoDoc = tipoDoc === 'CPF' ? 11 : 14;
 
     if (!nomeCartao.trim()) return 'Digite o nome impresso no cartão.';
     if (apenasNumeros(numero).length < 13)
       return 'Número do cartão incompleto.';
-    if (validade.length < 5 || mes < 1 || mes > 12)
-      return 'Validade inválida (use MM/AA).';
+    if (!validadeValida(validade))
+      return 'Validade inválida ou cartão vencido (use MM/AA).';
     if (cvv.length < 3) return 'CVV inválido.';
     if (!titular.trim()) return 'Digite o nome do titular.';
     if (apenasNumeros(documento).length !== tamanhoDoc)
@@ -111,7 +110,7 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
             label="Validade"
             placeholder="MM/AA"
             value={validade}
-            onChangeText={(t) => setValidade(formatarValidade(t))}
+            onChangeText={handlerValidade(setValidade)}
             keyboardType="numeric"
           />
         </View>

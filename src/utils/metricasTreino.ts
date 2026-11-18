@@ -110,7 +110,6 @@ export function gerarPlanoMesociclo(
       fase = 'Densidade Metabólica';
       repsAlvo = '15 reps (descanso curto)';
     } else {
-      // Hipertrofia Linear padrão
       perc = 70 + (i - 1) * 3;
       fase = i === 1 ? 'Adaptação' : 'Progressão de Carga';
       repsAlvo = i <= 2 ? '10-12 reps' : '8-10 reps';

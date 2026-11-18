@@ -18,6 +18,14 @@ import {
   calcularTonelagemExercicio,
   extrairRepsNumericas,
 } from '../utils/metricasTreino';
+import {
+  handlerInteiro,
+  handlerPeso,
+  handlerReps,
+  pesoValido,
+  repsValidas,
+  seriesValidas,
+} from '../utils/validadores';
 
 interface CalendarioRotinasProps {
   diaSelecionado: DiaSemana;
@@ -29,6 +37,7 @@ interface CalendarioRotinasProps {
 }
 
 const DIAS: DiaSemana[] = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'];
+const CARGA_MAXIMA = 500;
 
 export function CalendarioRotinas({
   diaSelecionado,
@@ -44,7 +53,6 @@ export function CalendarioRotinas({
   const [expandidoId, setExpandidoId] = useState<string | null>(null);
   const [concluidosIds, setConcluidosIds] = useState<string[]>([]);
 
-  // Estados temporários de edição do exercício clicado
   const [editSeries, setEditSeries] = useState('');
   const [editReps, setEditReps] = useState('');
   const [editCarga, setEditCarga] = useState('');
@@ -60,11 +68,26 @@ export function CalendarioRotinas({
     setEditCarga(item.carga || '0');
   }
 
+  function validarEdicao(): string | null {
+    if (!seriesValidas(editSeries)) return 'Informe de 1 a 20 séries.';
+    if (!repsValidas(editReps))
+      return 'Informe as repetições de 1 a 100 (ex.: 12 ou 8-12).';
+    if (!pesoValido(editCarga))
+      return `Informe um peso válido (0 a ${CARGA_MAXIMA} kg).`;
+    return null;
+  }
+
   function salvarEdicao(id: string) {
+    const erro = validarEdicao();
+    if (erro) {
+      Alert.alert('Atenção', erro);
+      return;
+    }
+
     editarExercicio(diaSelecionado, id, {
-      series: editSeries.trim() || '3',
-      repeticoes: editReps.trim() || '12',
-      carga: editCarga.trim() || '0',
+      series: editSeries,
+      repeticoes: editReps,
+      carga: String(Number(editCarga || '0')),
     });
     Alert.alert('Salvo!', 'Treino atualizado com sucesso.');
   }
@@ -218,9 +241,10 @@ export function CalendarioRotinas({
                         <Text style={styles.campoLabel}>Séries</Text>
                         <TextInput
                           style={styles.campoInput}
-                          keyboardType="numeric"
+                          keyboardType="number-pad"
+                          maxLength={2}
                           value={editSeries}
-                          onChangeText={setEditSeries}
+                          onChangeText={handlerInteiro(setEditSeries, 20)}
                         />
                       </View>
 
@@ -228,8 +252,10 @@ export function CalendarioRotinas({
                         <Text style={styles.campoLabel}>Repetições</Text>
                         <TextInput
                           style={styles.campoInput}
+                          keyboardType="numbers-and-punctuation"
+                          maxLength={7}
                           value={editReps}
-                          onChangeText={setEditReps}
+                          onChangeText={handlerReps(setEditReps)}
                         />
                       </View>
 
@@ -237,9 +263,10 @@ export function CalendarioRotinas({
                         <Text style={styles.campoLabel}>Peso (kg)</Text>
                         <TextInput
                           style={styles.campoInput}
-                          keyboardType="numeric"
+                          keyboardType="decimal-pad"
+                          maxLength={5}
                           value={editCarga}
-                          onChangeText={setEditCarga}
+                          onChangeText={handlerPeso(setEditCarga)}
                         />
                       </View>
                     </View>
@@ -260,7 +287,11 @@ export function CalendarioRotinas({
                       <Pressable
                         style={styles.ajusteBtn}
                         onPress={() =>
-                          setEditCarga((c) => String((Number(c) || 0) + 2.5))
+                          setEditCarga((c) =>
+                            String(
+                              Math.min(CARGA_MAXIMA, (Number(c) || 0) + 2.5)
+                            )
+                          )
                         }
                       >
                         <Text style={styles.ajusteBtnTexto}>+ 2.5 kg</Text>

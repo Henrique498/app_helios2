@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
 
-  // Abas dos dias da semana
+
   daysRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
     fontWeight: '800',
   },
 
-  // Card principal do dia
+
   card: {
     backgroundColor: '#0D1B2A',
     borderRadius: 16,
@@ -99,7 +99,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 24,
   },
 
-  // Lista numerada de exercícios
+
   itemWrapper: {
     borderBottomWidth: 1,
     borderBottomColor: '#1E2D3D',
@@ -148,7 +148,7 @@ export const styles = StyleSheet.create({
     marginTop: 3,
   },
 
-  // Gaveta expandida ao clicar no exercício
+
   gavetaExpandida: {
     marginTop: 12,
     backgroundColor: '#0A0F1D',
@@ -249,7 +249,7 @@ export const styles = StyleSheet.create({
     fontWeight: '800',
   },
 
-  // Botões do rodapé do card
+
   addButton: {
     borderWidth: 1.5,
     borderColor: '#F5B800',
