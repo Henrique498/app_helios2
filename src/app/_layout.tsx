@@ -1,9 +1,19 @@
 import { router, Stack, usePathname } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { BackHandler } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { RotinaProvider } from '../contexts/RotinaContext';
 
-const TELAS_RAIZ = ['/', '/HomeScreen', '/login', '/LoginScreen', '/dashboard'];
+const TELAS_RAIZ = [
+  '/',
+  '/HomeScreen',
+  '/login',
+  '/LoginScreen',
+  '/dashboard',
+  '/cadastro-instrutor',
+  '/controle-matriculas',
+];
 
 const originalBack = router.back.bind(router);
 router.back = () => {
@@ -21,7 +31,11 @@ export default function RootLayout() {
     if (pathname === '/pagamento') return;
 
     const onBackPress = () => {
-      if (pathname === '/dashboard') {
+      if (
+        pathname === '/dashboard' ||
+        pathname === '/cadastro-instrutor' ||
+        pathname === '/controle-matriculas'
+      ) {
         return true;
       }
 
@@ -38,8 +52,24 @@ export default function RootLayout() {
   }, [pathname]);
 
   return (
-    <RotinaProvider>
-      <Stack screenOptions={{ headerShown: false, gestureEnabled: true }} />
-    </RotinaProvider>
+    <SafeAreaProvider>
+      <SafeAreaView
+        edges={['top', 'bottom']}
+        style={{ flex: 1, backgroundColor: '#0A0F1D' }}
+      >
+        <StatusBar style="light" />
+        <RotinaProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              gestureEnabled: true,
+              contentStyle: {
+                backgroundColor: '#0A0F1D',
+              },
+            }}
+          />
+        </RotinaProvider>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

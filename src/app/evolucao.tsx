@@ -947,7 +947,7 @@ export default function EvolucaoScreen() {
                 : '#111827',
               borderWidth: amigo.isUsuario ? 1 : 0,
               borderColor: '#FFB800',
-            }}
+            }} 
           >
             <View
               style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
