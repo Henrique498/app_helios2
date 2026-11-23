@@ -18,6 +18,7 @@ import {
   formatarData,
 } from '../utils/formatadores';
 import { PAISES, Pais } from '../utils/paises';
+import { cadastrarUsuario } from '../utils/usuarios';
 
 type CampoProps = {
   label: string;
@@ -82,10 +83,12 @@ export default function Cadastro() {
     if (!/^\S+@\S+\.\S+$/.test(email)) return 'Digite um e-mail válido.';
     if (senha.length < 6) return 'A senha precisa ter pelo menos 6 caracteres.';
     if (senha !== confirmar) return 'As senhas não são iguais.';
+    if (senha === '123456' || senha === '1234567')
+      return 'Escolha outra senha (essa é reservada).';
     return null;
   }
 
-  function continuar() {
+  async function continuar() {
     const erro = validar();
 
     if (erro) {
@@ -93,16 +96,20 @@ export default function Cadastro() {
       return;
     }
 
-    console.log({
-      nome,
-      nascimento,
-      cpf: apenasNumeros(cpf),
-      telefone: `+${pais.ddi}${apenasNumeros(telefone)}`,
+    const resultado = await cadastrarUsuario({
+      nome: nome.trim(),
       email,
+      senha,
     });
+
+    if (resultado === 'email-existente') {
+      Alert.alert('Atenção', 'Já existe uma conta com esse e-mail.');
+      return;
+    }
 
     router.push('/planos');
   }
+
   return (
     <ScrollView
       style={styles.tela}
@@ -125,7 +132,7 @@ export default function Cadastro() {
 
       <Campo
         label="Data de Nascimento"
-        placeholder="Data de Nascimento (ex: DD/MM/AAAA"
+        placeholder="Data de Nascimento (ex: DD/MM/AAAA)"
         value={nascimento}
         onChangeText={(texto) => setNascimento(formatarData(texto))}
         keyboardType="numeric"

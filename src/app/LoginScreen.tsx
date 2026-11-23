@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { autenticar } from '../utils/usuarios';
 import { emailValido } from '../utils/validadores';
 
 export default function LoginScreen() {
@@ -19,7 +20,7 @@ export default function LoginScreen() {
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  function aoEntrar() {
+  async function aoEntrar() {
     if (!email.trim() || !senha.trim()) {
       Alert.alert('Atenção', 'Preencha o e-mail e a senha para entrar.');
       return;
@@ -31,6 +32,8 @@ export default function LoginScreen() {
       );
       return;
     }
+
+    // acessos reservados (qualquer e-mail)
     if (senha === '123456') {
       router.replace('/cadastro-instrutor');
       return;
@@ -39,9 +42,31 @@ export default function LoginScreen() {
       router.replace('/controle-matriculas');
       return;
     }
+
+    // aluno: precisa bater com o cadastro
+    const resultado = await autenticar(email, senha);
+
+    if (resultado === 'nao-cadastrado') {
+      Alert.alert(
+        'Sem cadastro',
+        'Não existe nenhuma conta cadastrada com esse e-mail.',
+        [
+          { text: 'OK', style: 'cancel' },
+          { text: 'Cadastrar agora', onPress: () => router.push('/cadastro') },
+        ]
+      );
+      return;
+    }
+
+    if (resultado === 'senha-incorreta') {
+      Alert.alert('Senha incorreta', 'A senha digitada está errada.');
+      return;
+    }
+
+    // todo login de aluno vai para o plano black
     router.replace({
       pathname: '/dashboard',
-      params: { plano: 'black', nome: 'Aluno' },
+      params: { plano: 'black' },
     });
   }
 

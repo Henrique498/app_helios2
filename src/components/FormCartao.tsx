@@ -13,7 +13,7 @@ import CampoTexto from './CampoTexto';
 
 type Props = {
   tipo: 'credito' | 'debito';
-  onFinalizar: () => void;
+  onFinalizar: (numeroCartao: string) => void;
 };
 
 const TIPOS_DOCUMENTO = ['CPF', 'CNPJ'] as const;
@@ -62,7 +62,7 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
       return;
     }
 
-    onFinalizar();
+    onFinalizar(numero);
   }
 
   return (

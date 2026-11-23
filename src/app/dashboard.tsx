@@ -1,12 +1,17 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import AlterarCartaoModal from '../components/AlterarCartaoModal';
 import CalendarioRotina from '../components/CalendarioRotina';
 import DayShake from '../components/DayShake';
 import { PLANOS } from '../data/planos';
 import { styles } from '../styles/DashBoard.styles';
+import {
+  sairDaSessao,
+  salvarCartaoFinal,
+  usuarioLogado,
+} from '../utils/usuarios';
 
 const TEXTO_GERENCIAR: Record<string, string> = {
   basic: 'Gerenciar Assinatura',
@@ -16,24 +21,33 @@ const TEXTO_GERENCIAR: Record<string, string> = {
 
 export default function Dashboard() {
   const router = useRouter();
-  const { plano: planoId, nome = 'Aluno' } = useLocalSearchParams<{
-    plano?: string;
-    nome?: string;
-  }>();
+  const { plano: planoId } = useLocalSearchParams<{ plano?: string }>();
 
-  const [cartaoFinal, setCartaoFinal] = useState('4566');
+  const [nome, setNome] = useState('Aluno');
+  const [cartaoFinal, setCartaoFinal] = useState<string | null>(null);
   const [modalCartao, setModalCartao] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
 
+  useEffect(() => {
+    usuarioLogado().then((u) => {
+      if (!u) return;
+      // primeiro nome do cadastro; se faltar, usa a parte antes do @ do e-mail
+      setNome(u.nome?.trim().split(' ')[0] || u.email.split('@')[0]);
+      setCartaoFinal(u.cartaoFinal ?? null);
+    });
+  }, []);
+
   const plano = PLANOS.find((p) => p.id === planoId) ?? PLANOS[0];
 
-  function sairDaConta() {
+  async function sairDaConta() {
     setMenuAberto(false);
+    await sairDaSessao();
     router.replace('/LoginScreen');
   }
 
   function salvarCartao(final: string, bandeira: string) {
     setCartaoFinal(final);
+    salvarCartaoFinal(final);
     setModalCartao(false);
     Alert.alert(
       'Cartão atualizado',
@@ -90,21 +104,10 @@ export default function Dashboard() {
 
         <Pressable
           onPress={() => router.push('/evolucao')}
-          style={{
-            backgroundColor: '#0D1B2A',
-            borderWidth: 1,
-            borderColor: '#FFB800',
-            borderRadius: 12,
-            height: 48,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-            marginTop: 10,
-          }}
+          style={styles.botaoEvolucao}
         >
           <Ionicons name="stats-chart" size={18} color="#FFB800" />
-          <Text style={{ color: '#FFB800', fontSize: 15, fontWeight: '700' }}>
+          <Text style={styles.botaoEvolucaoTexto}>
             Evolução, Periodização & Amigos
           </Text>
         </Pressable>
@@ -139,7 +142,11 @@ export default function Dashboard() {
           <View style={styles.pagLinha}>
             <View style={styles.pagInfo}>
               <Ionicons name="card" size={26} color="#FFFFFF" />
-              <Text style={styles.cartaoFinal}>•••• •••• {cartaoFinal}</Text>
+              <Text style={styles.cartaoFinal}>
+                {cartaoFinal
+                  ? `•••• •••• ${cartaoFinal}`
+                  : 'Nenhum cartão cadastrado'}
+              </Text>
             </View>
             <Pressable
               style={styles.botaoAlterar}

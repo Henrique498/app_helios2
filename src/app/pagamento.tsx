@@ -12,6 +12,8 @@ import {
 import FormCartao from '../components/FormCartao';
 import OpcaoPagamento from '../components/OpcaoPagamento';
 import { styles } from '../styles/Pagamento.styles';
+import { apenasNumeros } from '../utils/formatadores';
+import { salvarCartaoFinal } from '../utils/usuarios';
 
 type Metodo = 'credito' | 'debito';
 
@@ -34,7 +36,12 @@ export default function Pagamento() {
     return () => sub.remove();
   }, [metodo]);
 
-  function finalizar() {
+  async function finalizar(numeroCartao?: string) {
+    const digitos = apenasNumeros(numeroCartao ?? '');
+    if (digitos.length >= 4) {
+      await salvarCartaoFinal(digitos.slice(-4));
+    }
+
     Alert.alert('Compra finalizada', 'Seu pagamento foi enviado!', [
       {
         text: 'OK',
