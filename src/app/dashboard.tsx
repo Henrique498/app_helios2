@@ -102,15 +102,35 @@ export default function Dashboard() {
           <Text style={styles.botaoTreinoTexto}>Personalizar seu treino</Text>
         </Pressable>
 
-        <Pressable
-          onPress={() => router.push('/evolucao')}
-          style={styles.botaoEvolucao}
-        >
-          <Ionicons name="stats-chart" size={18} color="#FFB800" />
-          <Text style={styles.botaoEvolucaoTexto}>
-            Evolução, Periodização & Amigos
-          </Text>
-        </Pressable>
+        <View style={styles.atalhos}>
+          <Pressable
+            onPress={() => router.push('/evolucao')}
+            style={({ pressed }) => [
+              styles.atalho,
+              pressed && styles.atalhoPressionado,
+            ]}
+          >
+            <View style={styles.atalhoIcone}>
+              <Ionicons name="stats-chart" size={20} color="#FFB800" />
+            </View>
+            <Text style={styles.atalhoTitulo}>Evolução</Text>
+            <Text style={styles.atalhoSubtitulo}>Periodização e amigos</Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push('/fotos-evolucao')}
+            style={({ pressed }) => [
+              styles.atalho,
+              pressed && styles.atalhoPressionado,
+            ]}
+          >
+            <View style={styles.atalhoIcone}>
+              <Ionicons name="camera-outline" size={20} color="#FFB800" />
+            </View>
+            <Text style={styles.atalhoTitulo}>Fotos</Text>
+            <Text style={styles.atalhoSubtitulo}>Registre seu progresso</Text>
+          </Pressable>
+        </View>
 
         {plano.id === 'black' ? <DayShake /> : null}
 

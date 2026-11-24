@@ -36,8 +36,16 @@
       ],
       "expo-video",
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "O HeliosGym usa a câmera para registrar suas fotos de evolução.",
+          "photosPermission": "O HeliosGym acessa suas fotos para registrar sua evolução."
+        }
+      ]
     ],
+
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true

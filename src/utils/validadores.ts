@@ -1,4 +1,4 @@
-// utils/validadores.ts
+
 
 // ---------- E-mail ----------
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;

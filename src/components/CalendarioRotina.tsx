@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, Pressable, Text, TouchableOpacity, View } from 'react-native';
 import { useRotina } from '../contexts/RotinaContext';
 import { styles } from '../styles/DashBoard.styles';
 import { DiaSemana, NOMES_DIAS } from '../types/treinos';
@@ -32,6 +32,7 @@ const MESES = [
 ];
 
 type Celula = { numero: number; doMes: boolean; data: Date };
+type Seletor = 'mes' | 'ano' | null;
 
 // Monta as semanas do mês (começando na segunda), completando com dias
 // do mês anterior e do próximo para fechar as linhas.
@@ -58,6 +59,7 @@ function montarSemanas(ano: number, mes: number): Celula[][] {
 export default function CalendarioRotina() {
   const { rotina } = useRotina();
   const [diaDescanso, setDiaDescanso] = useState<DiaSemana | null>(null);
+  const [seletor, setSeletor] = useState<Seletor>(null);
 
   const hoje = new Date();
   const [mesVisivel, setMesVisivel] = useState(
@@ -68,9 +70,27 @@ export default function CalendarioRotina() {
   const mes = mesVisivel.getMonth();
   const semanas = useMemo(() => montarSemanas(ano, mes), [ano, mes]);
 
+  // 12 anos: 5 antes e 6 depois do ano atual
+  const anosDisponiveis = Array.from(
+    { length: 12 },
+    (_, i) => hoje.getFullYear() - 5 + i
+  );
+
   function mudarMes(delta: number) {
     setDiaDescanso(null);
     setMesVisivel(new Date(ano, mes + delta, 1));
+  }
+
+  function escolherMes(novoMes: number) {
+    setDiaDescanso(null);
+    setMesVisivel(new Date(ano, novoMes, 1));
+    setSeletor(null);
+  }
+
+  function escolherAno(novoAno: number) {
+    setDiaDescanso(null);
+    setMesVisivel(new Date(novoAno, mes, 1));
+    setSeletor(null);
   }
 
   const irParaTreino = (indexDia: number) => {
@@ -91,17 +111,17 @@ export default function CalendarioRotina() {
   return (
     <View style={styles.calendario}>
       <View style={styles.calTopo}>
-        <View style={[styles.chips, { alignItems: 'center' }]}>
+        <View style={styles.chips}>
           <TouchableOpacity onPress={() => mudarMes(-1)} hitSlop={10}>
             <Ionicons name="chevron-back" size={20} color="#FFB800" />
           </TouchableOpacity>
 
-          <View style={styles.chip}>
-            <Text style={styles.chipTexto}>{MESES[mes]}</Text>
-          </View>
-          <View style={styles.chip}>
-            <Text style={styles.chipTexto}>{ano}</Text>
-          </View>
+          <Pressable style={styles.chip} onPress={() => setSeletor('mes')}>
+            <Text style={styles.chipTexto}>{MESES[mes]} ▾</Text>
+          </Pressable>
+          <Pressable style={styles.chip} onPress={() => setSeletor('ano')}>
+            <Text style={styles.chipTexto}>{ano} ▾</Text>
+          </Pressable>
 
           <TouchableOpacity onPress={() => mudarMes(1)} hitSlop={10}>
             <Ionicons name="chevron-forward" size={20} color="#FFB800" />
@@ -200,6 +220,73 @@ export default function CalendarioRotina() {
           </Pressable>
         </View>
       ) : null}
+
+      {/* Seletor de mês / ano */}
+      <Modal
+        visible={seletor !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSeletor(null)}
+      >
+        <Pressable
+          style={styles.seletorOverlay}
+          onPress={() => setSeletor(null)}
+        >
+          <Pressable style={styles.seletorBox} onPress={() => {}}>
+            <Text style={styles.seletorTitulo}>
+              {seletor === 'mes' ? 'Escolha o mês' : 'Escolha o ano'}
+            </Text>
+
+            <View style={styles.seletorGrade}>
+              {seletor === 'mes'
+                ? MESES.map((nomeMes, i) => {
+                    const ativo = i === mes;
+                    return (
+                      <Pressable
+                        key={nomeMes}
+                        style={[
+                          styles.seletorItem,
+                          ativo && styles.seletorItemAtivo,
+                        ]}
+                        onPress={() => escolherMes(i)}
+                      >
+                        <Text
+                          style={[
+                            styles.seletorItemTexto,
+                            ativo && styles.seletorItemTextoAtivo,
+                          ]}
+                        >
+                          {nomeMes}
+                        </Text>
+                      </Pressable>
+                    );
+                  })
+                : anosDisponiveis.map((a) => {
+                    const ativo = a === ano;
+                    return (
+                      <Pressable
+                        key={a}
+                        style={[
+                          styles.seletorItem,
+                          ativo && styles.seletorItemAtivo,
+                        ]}
+                        onPress={() => escolherAno(a)}
+                      >
+                        <Text
+                          style={[
+                            styles.seletorItemTexto,
+                            ativo && styles.seletorItemTextoAtivo,
+                          ]}
+                        >
+                          {a}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }

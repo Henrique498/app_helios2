@@ -63,6 +63,46 @@ export const styles = StyleSheet.create({
   celulaTexto: { color: '#FFFFFF', fontSize: 14, fontWeight: '700' },
   celulaTextoAtivo: { color: '#0D1A29' },
 
+  // Seletor de mês / ano do calendário
+  seletorOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  seletorBox: {
+    width: '100%',
+    backgroundColor: '#0D1B2A',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#1E2D3D',
+    padding: 16,
+  },
+  seletorTitulo: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '800',
+    marginBottom: 14,
+    textAlign: 'center',
+  },
+  seletorGrade: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  seletorItem: {
+    width: '31%',
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: '#1A2B4A',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  seletorItemAtivo: { backgroundColor: '#FFB800' },
+  seletorItemTexto: { color: '#FFFFFF', fontSize: 14, fontWeight: '700' },
+  seletorItemTextoAtivo: { color: '#0D1A29' },
+
   botaoTreino: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -74,6 +114,35 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   botaoTreinoTexto: { color: '#000000', fontSize: 18, fontWeight: '700' },
+
+  atalhos: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  atalho: {
+    flex: 1,
+    backgroundColor: '#0D1B2A',
+    borderWidth: 1,
+    borderColor: '#1E2D3D',
+    borderRadius: 14,
+    padding: 14,
+  },
+  atalhoPressionado: {
+    borderColor: '#FFB800',
+    backgroundColor: '#101F31',
+  },
+  atalhoIcone: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 184, 0, 0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  atalhoTitulo: { color: '#FFFFFF', fontSize: 16, fontWeight: '800' },
+  atalhoSubtitulo: { color: '#A0AEC0', fontSize: 12, marginTop: 2 },
 
   cartao: {
     backgroundColor: '#0D1B2A',
@@ -152,7 +221,6 @@ export const styles = StyleSheet.create({
   cancelar: { alignSelf: 'center', padding: 14 },
   cancelarTexto: { color: '#A0AEC0', fontSize: 14, fontWeight: '700' },
 
- 
   menuOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
