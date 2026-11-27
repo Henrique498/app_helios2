@@ -235,7 +235,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#1E2D3D',
     paddingVertical: 6,
-    minWidth: 170,
+    minWidth: 190,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.45,
@@ -248,6 +248,11 @@ export const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     paddingHorizontal: 16,
+  },
+  menuItemTexto: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
   },
   menuItemSairTexto: {
     color: '#FF4D4D',
@@ -264,7 +269,7 @@ export const styles = StyleSheet.create({
     borderColor: '#1E2D3D',
   },
   celulaTextoDescanso: {
-    color: '#6B7385',
+    color: '#94A3B8',
     fontSize: 14,
     fontWeight: '700',
   },

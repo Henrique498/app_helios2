@@ -280,6 +280,23 @@ export default function Dashboard() {
           <View style={styles.menuBox} accessibilityViewIsModal>
             <Pressable
               style={styles.menuItem}
+              onPress={() => {
+                setMenuAberto(false);
+                router.push('/acessibilidade');
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Configurações de acessibilidade"
+            >
+              <Ionicons
+                name="accessibility-outline"
+                size={20}
+                color="#FFB800"
+              />
+              <Text style={styles.menuItemTexto}>Acessibilidade</Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.menuItem}
               onPress={sairDaConta}
               accessibilityRole="button"
               accessibilityLabel="Sair da conta"
