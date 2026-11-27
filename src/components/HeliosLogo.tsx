@@ -30,6 +30,9 @@ export function HeliosLogo({
 
   return (
     <View
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel="Helios Gym"
       style={[
         {
           flexDirection: 'row',

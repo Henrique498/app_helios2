@@ -67,11 +67,13 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
 
   return (
     <View style={styles.formulario}>
-      <Text style={styles.formTitulo}>
+      <Text style={styles.formTitulo} accessibilityRole="header">
         {tipo === 'credito' ? 'Cartão de Crédito' : 'Cartão de Débito'}
       </Text>
 
-      <Text style={styles.secao}>Informações do Cartão</Text>
+      <Text style={styles.secao} accessibilityRole="header">
+        Informações do Cartão
+      </Text>
 
       <View style={styles.linha}>
         <View style={styles.coluna}>
@@ -97,6 +99,8 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
                 size={16}
                 color="#000000"
                 style={{ marginRight: 6 }}
+                importantForAccessibility="no"
+                accessibilityElementsHidden
               />
             }
           />
@@ -118,17 +122,28 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
           <CampoTexto
             tema="claro"
             label="CVV"
+            accessibilityLabel="CVV, código de segurança do cartão"
             placeholder="CVV"
             value={cvv}
             onChangeText={(t) => setCvv(apenasNumeros(t).slice(0, 4))}
             keyboardType="numeric"
             secureTextEntry
-            direita={<Ionicons name="lock-closed" size={16} color="#000000" />}
+            direita={
+              <Ionicons
+                name="lock-closed"
+                size={16}
+                color="#000000"
+                importantForAccessibility="no"
+                accessibilityElementsHidden
+              />
+            }
           />
         </View>
       </View>
 
-      <Text style={styles.secao}>Informações de Cobrança</Text>
+      <Text style={styles.secao} accessibilityRole="header">
+        Informações de Cobrança
+      </Text>
 
       <CampoTexto
         tema="claro"
@@ -140,16 +155,24 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
 
       <View style={styles.linha}>
         <View style={styles.coluna}>
-          <Text style={styles.labelForm}>Selecione o tipo de documento</Text>
+          <Text style={styles.labelForm} accessibilityRole="header">
+            Selecione o tipo de documento
+          </Text>
           <Pressable
             style={styles.dropdown}
             onPress={() => setDocAberto(!docAberto)}
+            accessibilityRole="button"
+            accessibilityLabel={`Tipo de documento: ${tipoDoc}`}
+            accessibilityState={{ expanded: docAberto }}
+            accessibilityHint="Toque para escolher entre CPF e CNPJ"
           >
             <Text style={styles.dropdownTexto}>{tipoDoc}</Text>
             <Ionicons
               name={docAberto ? 'chevron-up' : 'chevron-down'}
               size={16}
               color="#000000"
+              importantForAccessibility="no"
+              accessibilityElementsHidden
             />
           </Pressable>
 
@@ -160,6 +183,9 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
                   key={t}
                   style={styles.dropdownItem}
                   onPress={() => escolherTipo(t)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t}
+                  accessibilityState={{ selected: t === tipoDoc }}
                 >
                   <Text style={styles.dropdownTexto}>{t}</Text>
                 </Pressable>
@@ -180,7 +206,12 @@ export default function FormCartao({ tipo, onFinalizar }: Props) {
         </View>
       </View>
 
-      <Pressable style={styles.botaoFinalizar} onPress={finalizar}>
+      <Pressable
+        style={styles.botaoFinalizar}
+        onPress={finalizar}
+        accessibilityRole="button"
+        accessibilityLabel="Finalizar compra"
+      >
         <Text style={styles.botaoFinalizarTexto}>Finalizar compra</Text>
       </Pressable>
     </View>

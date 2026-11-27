@@ -1,13 +1,14 @@
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
+  AccessibilityInfo,
   ActivityIndicator,
   Alert,
   Pressable,
   ScrollView,
   Text,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import CampoTexto from '../components/CampoTexto';
 import { styles } from '../styles/Endereco.styles';
 import { apenasNumeros, formatarCEP } from '../utils/formatadores';
@@ -46,6 +47,9 @@ export default function Endereco() {
       setCidade(dados.localidade ?? '');
       setBairro(dados.bairro ?? '');
       setRua(dados.logradouro ?? '');
+      AccessibilityInfo.announceForAccessibility(
+        'Endereço preenchido automaticamente'
+      );
     } catch {
       Alert.alert(
         'Sem conexão',
@@ -89,7 +93,13 @@ export default function Endereco() {
       contentContainerStyle={styles.conteudo}
       keyboardShouldPersistTaps="handled"
     >
-      <Pressable onPress={() => router.back()} style={styles.voltar}>
+      <Pressable
+        onPress={() => router.back()}
+        style={styles.voltar}
+        hitSlop={12}
+        accessibilityRole="button"
+        accessibilityLabel="Voltar"
+      >
         <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
       </Pressable>
 
@@ -97,7 +107,9 @@ export default function Endereco() {
         Helios<Text style={styles.logoGym}>Gym</Text>
       </Text>
 
-      <Text style={styles.titulo}>Qual seu endereço de cobrança?</Text>
+      <Text style={styles.titulo} accessibilityRole="header">
+        Qual seu endereço de cobrança?
+      </Text>
       <Text style={styles.subtitulo}>
         Por Favor, insira seus dados para identificarmos seu cadastro anterior
       </Text>
@@ -108,7 +120,14 @@ export default function Endereco() {
         value={cep}
         onChangeText={mudarCep}
         keyboardType="numeric"
-        direita={buscando ? <ActivityIndicator color="#FFB800" /> : null}
+        direita={
+          buscando ? (
+            <ActivityIndicator
+              color="#FFB800"
+              accessibilityLabel="Buscando CEP"
+            />
+          ) : null
+        }
       />
       <CampoTexto
         label="Estado"
@@ -150,7 +169,12 @@ export default function Endereco() {
         onChangeText={setComplemento}
       />
 
-      <Pressable style={styles.botao} onPress={avancar}>
+      <Pressable
+        style={styles.botao}
+        onPress={avancar}
+        accessibilityRole="button"
+        accessibilityLabel="Avançar para pagamento"
+      >
         <Text style={styles.botaoTexto}>Avançar para Pagamento</Text>
       </Pressable>
     </ScrollView>

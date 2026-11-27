@@ -61,7 +61,13 @@ export default function Pagamento() {
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.topo}>
-        <Pressable onPress={handleVoltar} style={styles.voltar}>
+        <Pressable
+          onPress={handleVoltar}
+          style={styles.voltar}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+        >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </Pressable>
 
@@ -69,25 +75,35 @@ export default function Pagamento() {
           Helios<Text style={styles.logoGym}>Gym</Text>
         </Text>
 
-        <Text style={styles.pergunta}>Qual sua forma de pagamento?</Text>
+        <Text style={styles.pergunta} accessibilityRole="header">
+          Qual sua forma de pagamento?
+        </Text>
         <View style={styles.seguro}>
-          <Ionicons name="shield-checkmark-outline" size={15} color="#34C759" />
+          <Ionicons
+            name="shield-checkmark-outline"
+            size={15}
+            color="#34C759"
+            importantForAccessibility="no"
+            accessibilityElementsHidden
+          />
           <Text style={styles.seguroTexto}>Compra 100% segura</Text>
         </View>
       </View>
 
-      <OpcaoPagamento
-        titulo="Cartão de Crédito"
-        marcas={['VISA', 'Mastercard', 'AMEX', 'Diners', 'Elo']}
-        selecionado={metodo === 'credito'}
-        onPress={() => setMetodo('credito')}
-      />
-      <OpcaoPagamento
-        titulo="Cartão de Débito"
-        marcas={['Itaú', 'Banco do Brasil', 'Inter', 'Bradesco']}
-        selecionado={metodo === 'debito'}
-        onPress={() => setMetodo('debito')}
-      />
+      <View accessibilityRole="radiogroup">
+        <OpcaoPagamento
+          titulo="Cartão de Crédito"
+          marcas={['VISA', 'Mastercard', 'AMEX', 'Diners', 'Elo']}
+          selecionado={metodo === 'credito'}
+          onPress={() => setMetodo('credito')}
+        />
+        <OpcaoPagamento
+          titulo="Cartão de Débito"
+          marcas={['Itaú', 'Banco do Brasil', 'Inter', 'Bradesco']}
+          selecionado={metodo === 'debito'}
+          onPress={() => setMetodo('debito')}
+        />
+      </View>
 
       {metodo ? (
         <FormCartao key={metodo} tipo={metodo} onFinalizar={finalizar} />

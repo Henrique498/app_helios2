@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from '../styles/treinos.styles';
 import { DiaSemana, NOMES_DIAS } from '../types/treinos';
@@ -37,15 +37,16 @@ export function AdicionarExercicioModal({
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>
+        <View style={styles.modalContent} accessibilityViewIsModal>
+          <Text style={styles.modalTitle} accessibilityRole="header">
             Novo Exercício ({NOMES_DIAS[diaSelecionado]})
           </Text>
 
           <TextInput
             style={styles.input}
             placeholder="Nome do exercício (ex: Supino Inclinado)"
-            placeholderTextColor="#6B7385"
+            placeholderTextColor="#94A3B8"
+            accessibilityLabel="Nome do exercício"
             value={nome}
             onChangeText={setNome}
           />
@@ -54,7 +55,8 @@ export function AdicionarExercicioModal({
             <TextInput
               style={[styles.input, { flex: 1, marginRight: 8 }]}
               placeholder="Séries (ex: 3)"
-              placeholderTextColor="#6B7385"
+              placeholderTextColor="#94A3B8"
+              accessibilityLabel="Número de séries"
               keyboardType="numeric"
               value={series}
               onChangeText={setSeries}
@@ -62,7 +64,8 @@ export function AdicionarExercicioModal({
             <TextInput
               style={[styles.input, { flex: 1, marginLeft: 8 }]}
               placeholder="Repetições (ex: 12)"
-              placeholderTextColor="#6B7385"
+              placeholderTextColor="#94A3B8"
+              accessibilityLabel="Número de repetições"
               keyboardType="numeric"
               value={repeticoes}
               onChangeText={setRepeticoes}
@@ -73,12 +76,16 @@ export function AdicionarExercicioModal({
             <TouchableOpacity
               style={[styles.modalBtn, styles.modalBtnCancel]}
               onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel="Cancelar"
             >
               <Text style={styles.modalBtnCancelText}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.modalBtn, styles.modalBtnConfirm]}
               onPress={handleSalvar}
+              accessibilityRole="button"
+              accessibilityLabel="Salvar exercício"
             >
               <Text style={styles.modalBtnConfirmText}>Salvar</Text>
             </TouchableOpacity>

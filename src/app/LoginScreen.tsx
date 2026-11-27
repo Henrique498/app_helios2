@@ -86,6 +86,9 @@ export default function LoginScreen() {
       >
         <Pressable
           onPress={() => router.replace('/')}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
           style={{ position: 'absolute', top: 16, left: 20, padding: 6 }}
         >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
@@ -99,6 +102,7 @@ export default function LoginScreen() {
         </View>
 
         <Text
+          importantForAccessibility="no"
           style={{
             color: '#E2E8F0',
             fontSize: 13,
@@ -116,7 +120,7 @@ export default function LoginScreen() {
             borderWidth: 1,
             borderColor: '#1E293B',
             borderRadius: 12,
-            height: 52,
+            minHeight: 52,
             paddingHorizontal: 14,
             marginBottom: 16,
           }}
@@ -124,13 +128,18 @@ export default function LoginScreen() {
           <Ionicons
             name="mail-outline"
             size={20}
-            color="#64748B"
+            color="#94A3B8"
             style={{ marginRight: 10 }}
+            importantForAccessibility="no"
+            accessibilityElementsHidden
           />
           <TextInput
             style={{ flex: 1, color: '#FFFFFF', fontSize: 15 }}
             placeholder="Digite seu e-mail"
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#94A3B8"
+            accessibilityLabel="E-mail"
+            autoComplete="email"
+            textContentType="emailAddress"
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
@@ -140,6 +149,7 @@ export default function LoginScreen() {
         </View>
 
         <Text
+          importantForAccessibility="no"
           style={{
             color: '#E2E8F0',
             fontSize: 13,
@@ -157,7 +167,7 @@ export default function LoginScreen() {
             borderWidth: 1,
             borderColor: '#1E293B',
             borderRadius: 12,
-            height: 52,
+            minHeight: 52,
             paddingHorizontal: 14,
             marginBottom: 24,
           }}
@@ -165,18 +175,30 @@ export default function LoginScreen() {
           <Ionicons
             name="lock-closed-outline"
             size={20}
-            color="#64748B"
+            color="#94A3B8"
             style={{ marginRight: 10 }}
+            importantForAccessibility="no"
+            accessibilityElementsHidden
           />
           <TextInput
             style={{ flex: 1, color: '#FFFFFF', fontSize: 15 }}
             placeholder="Digite sua senha"
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#94A3B8"
+            accessibilityLabel="Senha"
+            autoComplete="password"
+            textContentType="password"
             secureTextEntry={!mostrarSenha}
             value={senha}
             onChangeText={setSenha}
           />
-          <Pressable onPress={() => setMostrarSenha(!mostrarSenha)}>
+          <Pressable
+            onPress={() => setMostrarSenha(!mostrarSenha)}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel={
+              mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'
+            }
+          >
             <Ionicons
               name={mostrarSenha ? 'eye-outline' : 'eye-off-outline'}
               size={20}
@@ -187,10 +209,12 @@ export default function LoginScreen() {
 
         <Pressable
           onPress={aoEntrar}
+          accessibilityRole="button"
+          accessibilityLabel="Entrar"
           style={{
             backgroundColor: '#FFB800',
             borderRadius: 12,
-            height: 54,
+            minHeight: 54,
             alignItems: 'center',
             justifyContent: 'center',
           }}
@@ -211,7 +235,11 @@ export default function LoginScreen() {
           <Text style={{ color: '#94A3B8', fontSize: 14 }}>
             Ainda não tem conta?
           </Text>
-          <Pressable onPress={() => router.push('/cadastro')}>
+          <Pressable
+            onPress={() => router.push('/cadastro')}
+            accessibilityRole="link"
+            accessibilityLabel="Cadastre-se"
+          >
             <Text style={{ color: '#FFB800', fontSize: 14, fontWeight: '700' }}>
               Cadastre-se
             </Text>

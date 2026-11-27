@@ -41,11 +41,16 @@ export default function MinhaRotinaScreen() {
         <TouchableOpacity
           style={{ marginBottom: 14, alignSelf: 'flex-start' }}
           onPress={() => router.back()}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
         >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
 
-        <Text style={styles.heroTitle}>Minha Rotina</Text>
+        <Text style={styles.heroTitle} accessibilityRole="header">
+          Minha Rotina
+        </Text>
         <Text style={styles.heroSubtitle}>
           Visualize sua semana e acompanhe sua evolução.
         </Text>
@@ -58,6 +63,11 @@ export default function MinhaRotinaScreen() {
               style={styles.dayListCard}
               activeOpacity={0.8}
               onPress={() => abrirDia(dia)}
+              accessibilityRole="button"
+              accessibilityLabel={`${NOMES_DIAS[dia]}, ${totalExercicios} ${
+                totalExercicios === 1 ? 'exercício' : 'exercícios'
+              }`}
+              accessibilityHint="Toque para ver o treino do dia"
             >
               <View style={styles.dayBadge}>
                 <Text style={styles.dayBadgeText}>
@@ -73,13 +83,21 @@ export default function MinhaRotinaScreen() {
                 </Text>
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#8E96A4" />
+              <Ionicons
+                name="chevron-forward"
+                size={18}
+                color="#8E96A4"
+                importantForAccessibility="no"
+                accessibilityElementsHidden
+              />
             </TouchableOpacity>
           );
         })}
 
         <TouchableOpacity
           style={[styles.primaryButton, { marginTop: 14 }]}
+          accessibilityRole="button"
+          accessibilityLabel="Criar nova rotina"
           onPress={() =>
             router.push({
               pathname: '/adicionar-exercicio',

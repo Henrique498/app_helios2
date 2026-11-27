@@ -132,6 +132,9 @@ export function CalendarioRotinas({
             <TouchableOpacity
               key={dia}
               style={[styles.dayTab, ativo && styles.dayTabActive]}
+              accessibilityRole="tab"
+              accessibilityLabel={NOMES_DIAS[dia]}
+              accessibilityState={{ selected: ativo }}
               onPress={() => {
                 setExpandidoId(null);
                 onSelectDia(dia);
@@ -150,11 +153,16 @@ export function CalendarioRotinas({
       {/* Card principal igual ao protótipo */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>{NOMES_DIAS[diaSelecionado]}</Text>
+          <Text style={styles.cardTitle} accessibilityRole="header">
+            {NOMES_DIAS[diaSelecionado]}
+          </Text>
 
           <TouchableOpacity
             onPress={onEditarDia || (() => router.push('/evolucao'))}
             activeOpacity={0.7}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Editar dia"
           >
             <MaterialCommunityIcons name="pencil" size={20} color="#0A0E17" />
           </TouchableOpacity>
@@ -178,69 +186,97 @@ export function CalendarioRotinas({
 
             return (
               <View key={item.id} style={styles.itemWrapper}>
-                {/* Linha principal (clicar expande) */}
-                <Pressable
-                  onPress={() => aoClicarExercicio(item)}
-                  style={styles.exerciseRow}
-                >
-                  <MaterialCommunityIcons
-                    name="drag-vertical"
-                    size={20}
-                    color="#64748B"
-                  />
-
-                  <View
-                    style={[
-                      styles.numeroCirculo,
-                      concluido && styles.numeroCirculoConcluido,
-                    ]}
+                {/* Linha principal com Pressable do exercício e TouchableOpacity da lixeira como irmãos */}
+                <View style={styles.exerciseRow}>
+                  <Pressable
+                    onPress={() => aoClicarExercicio(item)}
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 8,
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Exercício ${index + 1}: ${item.nome}. ${
+                      item.series
+                    } séries, ${item.repeticoes} repetições${
+                      cargaNum > 0 ? `, ${cargaNum} quilos` : ''
+                    }${concluido ? '. Concluído' : ''}`}
+                    accessibilityState={{ expanded: aberto }}
+                    accessibilityHint="Toque para editar"
                   >
-                    {concluido ? (
-                      <Ionicons name="checkmark" size={16} color="#0A0E17" />
-                    ) : (
-                      <Text style={styles.numeroTexto}>{index + 1}</Text>
-                    )}
-                  </View>
+                    <MaterialCommunityIcons
+                      name="drag-vertical"
+                      size={20}
+                      color="#94A3B8"
+                      importantForAccessibility="no"
+                      accessibilityElementsHidden
+                    />
 
-                  <View style={styles.exerciseInfo}>
-                    <Text
+                    <View
                       style={[
-                        styles.exerciseName,
-                        concluido && {
-                          textDecorationLine: 'line-through',
-                          color: '#94A3B8',
-                        },
+                        styles.numeroCirculo,
+                        concluido && styles.numeroCirculoConcluido,
                       ]}
                     >
-                      {item.nome}
-                    </Text>
-                    <Text style={styles.exerciseDetails}>
-                      {item.series} séries • {item.repeticoes} repetições
-                      {cargaNum > 0 ? ` • ${cargaNum}kg` : ''}
-                    </Text>
-                  </View>
+                      {concluido ? (
+                        <Ionicons name="checkmark" size={16} color="#0A0E17" />
+                      ) : (
+                        <Text style={styles.numeroTexto}>{index + 1}</Text>
+                      )}
+                    </View>
+
+                    <View style={styles.exerciseInfo}>
+                      <Text
+                        style={[
+                          styles.exerciseName,
+                          concluido && {
+                            textDecorationLine: 'line-through',
+                            color: '#94A3B8',
+                          },
+                        ]}
+                      >
+                        {item.nome}
+                      </Text>
+                      <Text style={styles.exerciseDetails}>
+                        {item.series} séries • {item.repeticoes} repetições
+                        {cargaNum > 0 ? ` • ${cargaNum}kg` : ''}
+                      </Text>
+                    </View>
+                  </Pressable>
 
                   <TouchableOpacity
                     onPress={() => onRemoverExercicio(item.id)}
-                    hitSlop={10}
+                    hitSlop={12}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Remover ${item.nome}`}
                   >
                     <Ionicons name="trash-outline" size={20} color="#94A3B8" />
                   </TouchableOpacity>
-                </Pressable>
+                </View>
 
                 {/* Gaveta expandida ao clicar no exercício */}
                 {aberto && (
                   <View style={styles.gavetaExpandida}>
-                    <Text style={styles.gavetaTitulo}>
+                    <Text
+                      style={styles.gavetaTitulo}
+                      accessibilityRole="header"
+                    >
                       Editar exercício & detalhes
                     </Text>
 
                     {/* Campos editáveis: Séries, Reps e Peso */}
                     <View style={styles.inputsLinha}>
                       <View style={styles.campoBox}>
-                        <Text style={styles.campoLabel}>Séries</Text>
+                        <Text
+                          style={styles.campoLabel}
+                          importantForAccessibility="no"
+                        >
+                          Séries
+                        </Text>
                         <TextInput
                           style={styles.campoInput}
+                          accessibilityLabel="Séries"
                           keyboardType="number-pad"
                           maxLength={2}
                           value={editSeries}
@@ -249,9 +285,15 @@ export function CalendarioRotinas({
                       </View>
 
                       <View style={styles.campoBox}>
-                        <Text style={styles.campoLabel}>Repetições</Text>
+                        <Text
+                          style={styles.campoLabel}
+                          importantForAccessibility="no"
+                        >
+                          Repetições
+                        </Text>
                         <TextInput
                           style={styles.campoInput}
+                          accessibilityLabel="Repetições"
                           keyboardType="numbers-and-punctuation"
                           maxLength={7}
                           value={editReps}
@@ -260,9 +302,15 @@ export function CalendarioRotinas({
                       </View>
 
                       <View style={styles.campoBox}>
-                        <Text style={styles.campoLabel}>Peso (kg)</Text>
+                        <Text
+                          style={styles.campoLabel}
+                          importantForAccessibility="no"
+                        >
+                          Peso (kg)
+                        </Text>
                         <TextInput
                           style={styles.campoInput}
+                          accessibilityLabel="Peso em quilos"
                           keyboardType="decimal-pad"
                           maxLength={5}
                           value={editCarga}
@@ -275,6 +323,8 @@ export function CalendarioRotinas({
                     <View style={styles.ajusteCargaRow}>
                       <Pressable
                         style={styles.ajusteBtn}
+                        accessibilityRole="button"
+                        accessibilityLabel="Diminuir 2,5 quilos"
                         onPress={() =>
                           setEditCarga((c) =>
                             String(Math.max(0, (Number(c) || 0) - 2.5))
@@ -286,6 +336,8 @@ export function CalendarioRotinas({
 
                       <Pressable
                         style={styles.ajusteBtn}
+                        accessibilityRole="button"
+                        accessibilityLabel="Aumentar 2,5 quilos"
                         onPress={() =>
                           setEditCarga((c) =>
                             String(
@@ -322,6 +374,8 @@ export function CalendarioRotinas({
                     <View style={styles.acoesGavetaRow}>
                       <Pressable
                         style={styles.btnSalvarEdicao}
+                        accessibilityRole="button"
+                        accessibilityLabel="Salvar edição do exercício"
                         onPress={() => salvarEdicao(item.id)}
                       >
                         <Text style={styles.btnSalvarEdicaoTexto}>Salvar</Text>
@@ -332,6 +386,9 @@ export function CalendarioRotinas({
                           styles.btnConcluirEx,
                           concluido && { backgroundColor: '#15803D' },
                         ]}
+                        accessibilityRole="checkbox"
+                        accessibilityState={{ checked: concluido }}
+                        accessibilityLabel="Concluir exercício"
                         onPress={() => alternarConcluirExercicio(item.id)}
                       >
                         <Ionicons
@@ -342,6 +399,7 @@ export function CalendarioRotinas({
                           }
                           size={18}
                           color="#FFFFFF"
+                          importantForAccessibility="no"
                         />
                         <Text style={styles.btnConcluirExTexto}>
                           {concluido ? 'Concluído' : 'Concluir Exercício'}
@@ -360,6 +418,8 @@ export function CalendarioRotinas({
           style={styles.addButton}
           onPress={onAbrirModalAdicionar}
           activeOpacity={0.8}
+          accessibilityRole="button"
+          accessibilityLabel="Adicionar exercício"
         >
           <Text style={styles.addButtonText}>+ Adicionar Exercício.</Text>
         </TouchableOpacity>
@@ -370,8 +430,15 @@ export function CalendarioRotinas({
             style={styles.concluirTreinoButton}
             onPress={aoConcluirTreinoCompleto}
             activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel="Concluir treino"
           >
-            <Ionicons name="trophy-outline" size={20} color="#0A0E17" />
+            <Ionicons
+              name="trophy-outline"
+              size={20}
+              color="#0A0E17"
+              importantForAccessibility="no"
+            />
             <Text style={styles.concluirTreinoButtonText}>Concluir Treino</Text>
           </TouchableOpacity>
         )}

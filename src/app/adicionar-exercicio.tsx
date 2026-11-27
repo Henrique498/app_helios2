@@ -20,7 +20,7 @@ export default function AdicionarExercicioScreen() {
     'exercicios'
   );
   const [busca, setBusca] = useState('');
-  
+
   const [grupoExpandido, setGrupoExpandido] = useState<string | null>('peito');
   const [nomePersonalizado, setNomePersonalizado] = useState('');
 
@@ -49,19 +49,33 @@ export default function AdicionarExercicioScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.topBar}>
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar"
+          >
             <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
           </TouchableOpacity>
-          <Text style={styles.screenTitle}>Adicionar Exercício</Text>
+          <Text style={styles.screenTitle} accessibilityRole="header">
+            Adicionar Exercício
+          </Text>
         </View>
 
         {/* Barra de Busca */}
         <View style={styles.searchBox}>
-          <Ionicons name="search" size={18} color="#6B7385" />
+          <Ionicons
+            name="search"
+            size={18}
+            color="#94A3B8"
+            importantForAccessibility="no"
+            accessibilityElementsHidden
+          />
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar exercício..."
-            placeholderTextColor="#6B7385"
+            placeholderTextColor="#94A3B8"
+            accessibilityLabel="Buscar exercício"
             value={busca}
             onChangeText={setBusca}
           />
@@ -75,6 +89,8 @@ export default function AdicionarExercicioScreen() {
               abaAtiva === 'exercicios' && styles.segmentBtnActive,
             ]}
             onPress={() => setAbaAtiva('exercicios')}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: abaAtiva === 'exercicios' }}
           >
             <Text
               style={[
@@ -92,6 +108,8 @@ export default function AdicionarExercicioScreen() {
               abaAtiva === 'personalizado' && styles.segmentBtnActive,
             ]}
             onPress={() => setAbaAtiva('personalizado')}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: abaAtiva === 'personalizado' }}
           >
             <Text
               style={[
@@ -114,12 +132,17 @@ export default function AdicionarExercicioScreen() {
                   style={styles.groupCard}
                   activeOpacity={0.8}
                   onPress={() => setGrupoExpandido(aberto ? null : grupo.id)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${grupo.nome}. ${grupo.exemplos}`}
+                  accessibilityState={{ expanded: aberto }}
                 >
                   <View style={styles.groupIconCircle}>
                     <MaterialCommunityIcons
                       name={grupo.icone as any}
                       size={22}
                       color="#9BA3B4"
+                      importantForAccessibility="no"
+                      accessibilityElementsHidden
                     />
                   </View>
 
@@ -132,6 +155,8 @@ export default function AdicionarExercicioScreen() {
                     name={aberto ? 'chevron-down' : 'chevron-forward'}
                     size={18}
                     color="#8E96A4"
+                    importantForAccessibility="no"
+                    accessibilityElementsHidden
                   />
                 </TouchableOpacity>
 
@@ -155,6 +180,8 @@ export default function AdicionarExercicioScreen() {
                         ]}
                         activeOpacity={0.7}
                         onPress={() => irParaConfigurar(exercicio, grupo.nome)}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Configurar ${exercicio}`}
                       >
                         <Text
                           style={[styles.groupTitle, { flex: 1, fontSize: 14 }]}
@@ -165,6 +192,8 @@ export default function AdicionarExercicioScreen() {
                           name="chevron-forward"
                           size={18}
                           color="#F5B800"
+                          importantForAccessibility="no"
+                          accessibilityElementsHidden
                         />
                       </TouchableOpacity>
                     ))}
@@ -173,14 +202,19 @@ export default function AdicionarExercicioScreen() {
           })
         ) : (
           <View style={styles.customFormCard}>
-            <Text style={styles.fieldLabel}>
+            <Text
+              style={styles.fieldLabel}
+              importantForAccessibility="no"
+              accessibilityElementsHidden
+            >
               Nome do Exercício Personalizado
             </Text>
             <View style={styles.searchBox}>
               <TextInput
                 style={[styles.searchInput, { marginLeft: 0 }]}
                 placeholder="Ex.: Elevação Pélvica na Máquina"
-                placeholderTextColor="#6B7385"
+                placeholderTextColor="#94A3B8"
+                accessibilityLabel="Nome do exercício personalizado"
                 value={nomePersonalizado}
                 onChangeText={setNomePersonalizado}
               />
@@ -189,6 +223,8 @@ export default function AdicionarExercicioScreen() {
             <TouchableOpacity
               style={styles.primaryButton}
               activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel="Configurar exercício"
               onPress={() => {
                 const nomeFinal =
                   nomePersonalizado.trim() || 'Exercício Personalizado';

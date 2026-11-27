@@ -27,6 +27,7 @@ type CampoProps = {
   onChangeText: (texto: string) => void;
   keyboardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
+  accessibilityHint?: string;
   direita?: React.ReactNode;
 };
 
@@ -37,16 +38,25 @@ function Campo({
   onChangeText,
   keyboardType,
   secureTextEntry,
+  accessibilityHint,
   direita,
 }: CampoProps) {
   return (
     <View style={styles.Campo}>
-      <Text style={styles.label}>{label}</Text>
+      <Text
+        style={styles.label}
+        importantForAccessibility="no"
+        accessibilityElementsHidden
+      >
+        {label}
+      </Text>
       <View style={styles.inputBox}>
         <TextInput
           style={styles.input}
           placeholder={placeholder}
-          placeholderTextColor="#8A84A6"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel={label}
+          accessibilityHint={accessibilityHint}
           value={value}
           onChangeText={onChangeText}
           keyboardType={keyboardType}
@@ -116,12 +126,20 @@ export default function Cadastro() {
       contentContainerStyle={styles.conteudo}
       keyboardShouldPersistTaps="handled"
     >
-      <Pressable onPress={() => router.back()} style={styles.voltar}>
+      <Pressable
+        onPress={() => router.back()}
+        style={styles.voltar}
+        hitSlop={12}
+        accessibilityRole="button"
+        accessibilityLabel="Voltar"
+      >
         <Ionicons name="arrow-back" size={24} color={'#FFFFFF'} />
       </Pressable>
 
       <Text style={styles.logoTexto}>Helios</Text>
-      <Text style={styles.titulo}>Cadastro de alunos</Text>
+      <Text style={styles.titulo} accessibilityRole="header">
+        Cadastro de alunos
+      </Text>
 
       <Campo
         label="Nome Completo"
@@ -133,6 +151,7 @@ export default function Cadastro() {
       <Campo
         label="Data de Nascimento"
         placeholder="Data de Nascimento (ex: DD/MM/AAAA)"
+        accessibilityHint="Digite dia, mês e ano"
         value={nascimento}
         onChangeText={(texto) => setNascimento(formatarData(texto))}
         keyboardType="numeric"
@@ -168,7 +187,12 @@ export default function Cadastro() {
         onChangeText={setSenha}
         secureTextEntry={!verSenha}
         direita={
-          <Pressable onPress={() => setVerSenha(!verSenha)}>
+          <Pressable
+            onPress={() => setVerSenha(!verSenha)}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel={verSenha ? 'Ocultar senha' : 'Mostrar senha'}
+          >
             <Ionicons
               name={verSenha ? 'eye-outline' : 'eye-off-outline'}
               size={20}
@@ -185,7 +209,16 @@ export default function Cadastro() {
         onChangeText={setConfirmar}
         secureTextEntry={!verConfirmar}
         direita={
-          <Pressable onPress={() => setVerConfirmar(!verConfirmar)}>
+          <Pressable
+            onPress={() => setVerConfirmar(!verConfirmar)}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel={
+              verConfirmar
+                ? 'Ocultar confirmação de senha'
+                : 'Mostrar confirmação de senha'
+            }
+          >
             <Ionicons
               name={verConfirmar ? 'eye-outline' : 'eye-off-outline'}
               size={20}
@@ -195,7 +228,12 @@ export default function Cadastro() {
         }
       />
 
-      <Pressable style={styles.botao} onPress={continuar}>
+      <Pressable
+        style={styles.botao}
+        onPress={continuar}
+        accessibilityRole="button"
+        accessibilityLabel="Continuar cadastro"
+      >
         <Text style={styles.botaoTexto}>Continuar cadastro</Text>
       </Pressable>
     </ScrollView>

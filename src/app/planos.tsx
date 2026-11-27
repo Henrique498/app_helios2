@@ -11,16 +11,25 @@ export default function Planos() {
   function escolher(plano: Plano) {
     router.push({ pathname: '/endereco', params: { plano: plano.id } });
   }
+
   return (
     <ScrollView style={styles.tela} contentContainerStyle={styles.conteudo}>
       <View style={styles.cabecalho}>
-        <Pressable style={styles.voltar} onPress={() => router.back()}>
+        <Pressable
+          style={styles.voltar}
+          onPress={() => router.back()}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+        >
           <Ionicons name="arrow-back" size={24} color={'#FFFFFF'} />
         </Pressable>
         <Text style={styles.logo}>
           Helios<Text style={styles.logoGym}>Gym</Text>
         </Text>
-        <Text style={styles.subtitulo}>Escolha o plano ideal para você</Text>
+        <Text style={styles.subtitulo} accessibilityRole="header">
+          Escolha o plano ideal para você
+        </Text>
       </View>
 
       {PLANOS.map((plano) => (

@@ -105,16 +105,25 @@ export default function AlterarCartaoModal({
         style={s.overlay}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={s.sheet}>
+        <View style={s.sheet} accessibilityViewIsModal>
           <View style={s.header}>
-            <Text style={s.titulo}>Alterar forma de pagamento</Text>
-            <Pressable onPress={fechar} hitSlop={10}>
+            <Text style={s.titulo} accessibilityRole="header">
+              Alterar forma de pagamento
+            </Text>
+            <Pressable
+              onPress={fechar}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Fechar"
+            >
               <Ionicons name="close" size={24} color="#FFFFFF" />
             </Pressable>
           </View>
 
           <ScrollView keyboardShouldPersistTaps="handled">
-            <Text style={s.label}>Número do cartão</Text>
+            <Text style={s.label} importantForAccessibility="no">
+              Número do cartão
+            </Text>
             <View style={s.inputLinha}>
               <TextInput
                 style={s.inputFlex}
@@ -124,7 +133,8 @@ export default function AlterarCartaoModal({
                   setErro('');
                 }}
                 placeholder="0000 0000 0000 0000"
-                placeholderTextColor="#666"
+                placeholderTextColor="#94A3B8"
+                accessibilityLabel="Número do cartão"
                 keyboardType="number-pad"
                 maxLength={19}
               />
@@ -133,7 +143,9 @@ export default function AlterarCartaoModal({
               ) : null}
             </View>
 
-            <Text style={s.label}>Nome impresso no cartão</Text>
+            <Text style={s.label} importantForAccessibility="no">
+              Nome impresso no cartão
+            </Text>
             <TextInput
               style={s.input}
               value={nome}
@@ -142,13 +154,16 @@ export default function AlterarCartaoModal({
                 setErro('');
               }}
               placeholder="NOME SOBRENOME"
-              placeholderTextColor="#666"
+              placeholderTextColor="#94A3B8"
+              accessibilityLabel="Nome impresso no cartão"
               autoCapitalize="characters"
             />
 
             <View style={s.duas}>
               <View style={{ flex: 1 }}>
-                <Text style={s.label}>Validade</Text>
+                <Text style={s.label} importantForAccessibility="no">
+                  Validade
+                </Text>
                 <TextInput
                   style={s.input}
                   value={validade}
@@ -157,13 +172,16 @@ export default function AlterarCartaoModal({
                     setErro('');
                   }}
                   placeholder="MM/AA"
-                  placeholderTextColor="#666"
+                  placeholderTextColor="#94A3B8"
+                  accessibilityLabel="Validade, mês e ano"
                   keyboardType="number-pad"
                   maxLength={5}
                 />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={s.label}>CVV</Text>
+                <Text style={s.label} importantForAccessibility="no">
+                  CVV
+                </Text>
                 <TextInput
                   style={s.input}
                   value={cvv}
@@ -172,7 +190,8 @@ export default function AlterarCartaoModal({
                     setErro('');
                   }}
                   placeholder="000"
-                  placeholderTextColor="#666"
+                  placeholderTextColor="#94A3B8"
+                  accessibilityLabel="CVV, código de segurança"
                   keyboardType="number-pad"
                   secureTextEntry
                   maxLength={4}
@@ -180,9 +199,22 @@ export default function AlterarCartaoModal({
               </View>
             </View>
 
-            {erro ? <Text style={s.erro}>{erro}</Text> : null}
+            {erro ? (
+              <Text
+                style={s.erro}
+                accessibilityRole="alert"
+                accessibilityLiveRegion="polite"
+              >
+                {erro}
+              </Text>
+            ) : null}
 
-            <Pressable style={s.botao} onPress={salvar}>
+            <Pressable
+              style={s.botao}
+              onPress={salvar}
+              accessibilityRole="button"
+              accessibilityLabel="Salvar cartão"
+            >
               <Text style={s.botaoTexto}>Salvar cartão</Text>
             </Pressable>
           </ScrollView>
@@ -219,6 +251,7 @@ const s = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
+    minHeight: 48,
     fontSize: 16,
   },
   inputLinha: {
@@ -233,6 +266,7 @@ const s = StyleSheet.create({
     color: '#FFFFFF',
     paddingHorizontal: 14,
     paddingVertical: 12,
+    minHeight: 48,
     fontSize: 16,
   },
   bandeira: { color: '#FFB800', fontWeight: '700', fontSize: 12 },

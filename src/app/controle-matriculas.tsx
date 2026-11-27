@@ -71,14 +71,19 @@ export default function ControleMatriculasScreen() {
         <View style={styles.topoBar}>
           <Pressable
             onPress={() => router.replace('/LoginScreen')}
-            hitSlop={10}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Sair"
           >
             <Ionicons name="log-out-outline" size={24} color="#FFFFFF" />
           </Pressable>
         </View>
 
         {/* A logo compacta oficial é gerada universalmente pelo _layout.tsx */}
-        <Text style={[styles.tituloPagina, { marginTop: 16 }]}>
+        <Text
+          style={[styles.tituloPagina, { marginTop: 16 }]}
+          accessibilityRole="header"
+        >
           Controle de Matrículas
         </Text>
 
@@ -86,11 +91,18 @@ export default function ControleMatriculasScreen() {
           <TextInput
             style={styles.input}
             placeholder="Buscar aluno por nome ou CPF"
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#94A3B8"
+            accessibilityLabel="Buscar aluno por nome ou CPF"
             value={busca}
             onChangeText={setBusca}
           />
-          <Ionicons name="search" size={18} color="#64748B" />
+          <Ionicons
+            name="search"
+            size={18}
+            color="#94A3B8"
+            importantForAccessibility="no"
+            accessibilityElementsHidden
+          />
         </View>
 
         <View style={styles.filtrosRow}>
@@ -101,6 +113,8 @@ export default function ControleMatriculasScreen() {
                 <Pressable
                   key={item}
                   onPress={() => setAba(item)}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: ativo }}
                   style={[styles.filtroItem, ativo && styles.filtroItemAtivo]}
                 >
                   <Text
@@ -118,21 +132,41 @@ export default function ControleMatriculasScreen() {
         </View>
 
         <View style={styles.resumoRow}>
-          <View style={styles.resumoCard}>
+          <View
+            style={styles.resumoCard}
+            accessible
+            accessibilityLabel="142 matrículas ativas"
+          >
             <Text style={styles.resumoNumero}>142</Text>
             <Text style={styles.resumoLabel}>Ativas</Text>
           </View>
-          <View style={styles.resumoCard}>
+          <View
+            style={styles.resumoCard}
+            accessible
+            accessibilityLabel="8 matrículas a vencer"
+          >
             <Text style={styles.resumoNumero}>8</Text>
             <Text style={styles.resumoLabel}>A Vencer</Text>
           </View>
         </View>
 
         {alunosFiltrados.map((aluno) => (
-          <View key={aluno.id} style={styles.alunoCard}>
+          <View
+            key={aluno.id}
+            style={styles.alunoCard}
+            accessible
+            accessibilityLabel={`${aluno.nome}, ${aluno.plano}, vence em ${
+              aluno.vencimento
+            }, matrícula ${aluno.status.toLowerCase()}`}
+          >
             <View style={styles.alunoEsquerda}>
               <View style={styles.avatarCirculo}>
-                <Ionicons name="person-outline" size={20} color="#FFB800" />
+                <Ionicons
+                  name="person-outline"
+                  size={20}
+                  color="#FFB800"
+                  importantForAccessibility="no"
+                />
               </View>
               <View>
                 <Text style={styles.alunoNome}>{aluno.nome}</Text>
@@ -154,7 +188,12 @@ export default function ControleMatriculasScreen() {
         ))}
       </ScrollView>
 
-      <Pressable style={styles.fab} onPress={() => router.push('/cadastro')}>
+      <Pressable
+        style={styles.fab}
+        onPress={() => router.push('/cadastro')}
+        accessibilityRole="button"
+        accessibilityLabel="Cadastrar novo aluno"
+      >
         <Ionicons name="add" size={28} color="#0A0F1D" />
       </Pressable>
     </View>

@@ -112,18 +112,38 @@ export default function CalendarioRotina() {
     <View style={styles.calendario}>
       <View style={styles.calTopo}>
         <View style={styles.chips}>
-          <TouchableOpacity onPress={() => mudarMes(-1)} hitSlop={10}>
+          <TouchableOpacity
+            onPress={() => mudarMes(-1)}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Mês anterior"
+          >
             <Ionicons name="chevron-back" size={20} color="#FFB800" />
           </TouchableOpacity>
 
-          <Pressable style={styles.chip} onPress={() => setSeletor('mes')}>
+          <Pressable
+            style={styles.chip}
+            onPress={() => setSeletor('mes')}
+            accessibilityRole="button"
+            accessibilityLabel={`Mês: ${MESES[mes]}. Toque para alterar`}
+          >
             <Text style={styles.chipTexto}>{MESES[mes]} ▾</Text>
           </Pressable>
-          <Pressable style={styles.chip} onPress={() => setSeletor('ano')}>
+          <Pressable
+            style={styles.chip}
+            onPress={() => setSeletor('ano')}
+            accessibilityRole="button"
+            accessibilityLabel={`Ano: ${ano}. Toque para alterar`}
+          >
             <Text style={styles.chipTexto}>{ano} ▾</Text>
           </Pressable>
 
-          <TouchableOpacity onPress={() => mudarMes(1)} hitSlop={10}>
+          <TouchableOpacity
+            onPress={() => mudarMes(1)}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Próximo mês"
+          >
             <Ionicons name="chevron-forward" size={20} color="#FFB800" />
           </TouchableOpacity>
         </View>
@@ -131,9 +151,17 @@ export default function CalendarioRotina() {
         <TouchableOpacity
           style={styles.calDireita}
           onPress={() => router.push('/minha-rotina')}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir Sua Rotina"
         >
           <Text style={styles.suaRotina}>Sua Rotina</Text>
-          <Ionicons name="chevron-forward" size={16} color="#FFB800" />
+          <Ionicons
+            name="chevron-forward"
+            size={16}
+            color="#FFB800"
+            importantForAccessibility="no"
+            accessibilityElementsHidden
+          />
         </TouchableOpacity>
       </View>
 
@@ -148,6 +176,9 @@ export default function CalendarioRotina() {
               key={dia}
               style={[styles.celula, ativo && styles.celulaAtiva]}
               onPress={() => irParaTreino(index)}
+              accessibilityRole="button"
+              accessibilityLabel={NOMES_DIAS[diaKey]}
+              accessibilityState={{ selected: ativo }}
             >
               <Text
                 style={[styles.celulaTexto, ativo && styles.celulaTextoAtivo]}
@@ -166,6 +197,11 @@ export default function CalendarioRotina() {
             const diaKey = DIAS_KEYS[dIndex];
             const ativo = (rotina[diaKey]?.length || 0) > 0;
             const ehHoje = celula.data.toDateString() === hoje.toDateString();
+            const rotuloDia = celula.data.toLocaleDateString('pt-BR', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+            });
 
             return (
               <TouchableOpacity
@@ -176,6 +212,11 @@ export default function CalendarioRotina() {
                   ehHoje && { borderWidth: 1.5, borderColor: '#FFFFFF' },
                 ]}
                 onPress={() => irParaTreino(dIndex)}
+                accessibilityRole="button"
+                accessibilityLabel={`${rotuloDia}${ehHoje ? ', hoje' : ''}${
+                  !celula.doMes ? ', fora do mês atual' : ''
+                }, ${ativo ? 'com treino' : 'dia de descanso'}`}
+                accessibilityState={{ selected: ehHoje }}
               >
                 <Text
                   style={[
@@ -194,9 +235,15 @@ export default function CalendarioRotina() {
 
       {/* Card de descanso ao tocar em um dia da semana sem treino */}
       {diaDescanso && (rotina[diaDescanso]?.length || 0) === 0 ? (
-        <View style={styles.descansoCard}>
+        <View style={styles.descansoCard} accessibilityLiveRegion="polite">
           <View style={styles.descansoInfo}>
-            <Ionicons name="bed-outline" size={22} color="#FFB800" />
+            <Ionicons
+              name="bed-outline"
+              size={22}
+              color="#FFB800"
+              importantForAccessibility="no"
+              accessibilityElementsHidden
+            />
             <View style={{ flex: 1 }}>
               <Text style={styles.descansoTitulo}>
                 {NOMES_DIAS[diaDescanso]} é dia de descanso
@@ -209,6 +256,8 @@ export default function CalendarioRotina() {
 
           <Pressable
             style={styles.botaoAdicionarDescanso}
+            accessibilityRole="button"
+            accessibilityLabel={`Adicionar exercício para ${NOMES_DIAS[diaDescanso]}`}
             onPress={() =>
               router.push({
                 pathname: '/adicionar-exercicio',
@@ -232,8 +281,12 @@ export default function CalendarioRotina() {
           style={styles.seletorOverlay}
           onPress={() => setSeletor(null)}
         >
-          <Pressable style={styles.seletorBox} onPress={() => {}}>
-            <Text style={styles.seletorTitulo}>
+          <Pressable
+            style={styles.seletorBox}
+            onPress={() => {}}
+            accessibilityViewIsModal
+          >
+            <Text style={styles.seletorTitulo} accessibilityRole="header">
               {seletor === 'mes' ? 'Escolha o mês' : 'Escolha o ano'}
             </Text>
 
@@ -249,6 +302,8 @@ export default function CalendarioRotina() {
                           ativo && styles.seletorItemAtivo,
                         ]}
                         onPress={() => escolherMes(i)}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: ativo }}
                       >
                         <Text
                           style={[
@@ -271,6 +326,8 @@ export default function CalendarioRotina() {
                           ativo && styles.seletorItemAtivo,
                         ]}
                         onPress={() => escolherAno(a)}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: ativo }}
                       >
                         <Text
                           style={[

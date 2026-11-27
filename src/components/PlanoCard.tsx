@@ -1,5 +1,5 @@
-import { Pressable, Text, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Pressable, Text, View } from 'react-native';
 import { Plano } from '../data/planos';
 import { styles } from '../styles/planos.styles';
 
@@ -16,6 +16,11 @@ export default function PlanoCard({ plano, onPress }: Props) {
     <Pressable
       style={[styles.card, d && styles.cardDestaque]}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`Plano ${plano.nome}, ${plano.preco}. Benefícios: ${plano.beneficios
+        .map((b) => b.texto)
+        .join(', ')}`}
+      accessibilityHint="Toque duas vezes para escolher este plano"
     >
       <View style={[styles.topo, d && styles.topoDestaque]}>
         <Text style={styles.plano}>
@@ -33,7 +38,13 @@ export default function PlanoCard({ plano, onPress }: Props) {
       <View style={styles.lista}>
         {plano.beneficios.map((b) => (
           <View key={b.texto} style={styles.item}>
-            <MaterialCommunityIcons name={b.icone} size={20} color={corTexto} />
+            <MaterialCommunityIcons
+              name={b.icone}
+              size={20}
+              color={corTexto}
+              importantForAccessibility="no"
+              accessibilityElementsHidden
+            />
             <Text style={[styles.itemTexto, d && styles.textoDestaque]}>
               {b.texto}
             </Text>

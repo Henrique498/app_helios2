@@ -76,6 +76,8 @@ export default function Dashboard() {
         <Pressable
           onPress={() => setMenuAberto(true)}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir menu"
         >
           <Ionicons name="menu" size={26} color="#FFFFFF" />
         </Pressable>
@@ -83,13 +85,28 @@ export default function Dashboard() {
         <Text style={styles.logo}>
           Helios<Text style={styles.logoGym}>Gym</Text>
         </Text>
-        <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
+
+        <Pressable
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Notificações"
+          onPress={() => {}}
+        >
+          <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
+        </Pressable>
       </View>
 
       <View style={styles.corpo}>
         <View style={styles.saudacao}>
-          <Ionicons name="person-circle" size={52} color="#FFB800" />
-          <Text style={styles.saudacaoTexto}>Olá, {nome}!</Text>
+          <Ionicons
+            name="person-circle"
+            size={52}
+            color="#FFB800"
+            importantForAccessibility="no"
+          />
+          <Text style={styles.saudacaoTexto} accessibilityRole="header">
+            Olá, {nome}!
+          </Text>
         </View>
 
         <CalendarioRotina />
@@ -97,21 +114,35 @@ export default function Dashboard() {
         <Pressable
           style={styles.botaoTreino}
           onPress={() => router.push('/minha-rotina')}
+          accessibilityRole="button"
+          accessibilityLabel="Personalizar seu treino"
         >
-          <MaterialCommunityIcons name="dumbbell" size={30} color="#000000" />
+          <MaterialCommunityIcons
+            name="dumbbell"
+            size={30}
+            color="#000000"
+            importantForAccessibility="no"
+          />
           <Text style={styles.botaoTreinoTexto}>Personalizar seu treino</Text>
         </Pressable>
 
         <View style={styles.atalhos}>
           <Pressable
             onPress={() => router.push('/evolucao')}
+            accessibilityRole="button"
+            accessibilityLabel="Evolução. Periodização e amigos"
             style={({ pressed }) => [
               styles.atalho,
               pressed && styles.atalhoPressionado,
             ]}
           >
             <View style={styles.atalhoIcone}>
-              <Ionicons name="stats-chart" size={20} color="#FFB800" />
+              <Ionicons
+                name="stats-chart"
+                size={20}
+                color="#FFB800"
+                importantForAccessibility="no"
+              />
             </View>
             <Text style={styles.atalhoTitulo}>Evolução</Text>
             <Text style={styles.atalhoSubtitulo}>Periodização e amigos</Text>
@@ -119,13 +150,20 @@ export default function Dashboard() {
 
           <Pressable
             onPress={() => router.push('/fotos-evolucao')}
+            accessibilityRole="button"
+            accessibilityLabel="Fotos. Registre seu progresso"
             style={({ pressed }) => [
               styles.atalho,
               pressed && styles.atalhoPressionado,
             ]}
           >
             <View style={styles.atalhoIcone}>
-              <Ionicons name="camera-outline" size={20} color="#FFB800" />
+              <Ionicons
+                name="camera-outline"
+                size={20}
+                color="#FFB800"
+                importantForAccessibility="no"
+              />
             </View>
             <Text style={styles.atalhoTitulo}>Fotos</Text>
             <Text style={styles.atalhoSubtitulo}>Registre seu progresso</Text>
@@ -134,7 +172,11 @@ export default function Dashboard() {
 
         {plano.id === 'black' ? <DayShake /> : null}
 
-        <View style={styles.cartao}>
+        <View
+          style={styles.cartao}
+          accessible
+          accessibilityLabel={`Plano ${plano.nome}, ${plano.preco} por mês. Próxima renovação em 01 de maio de 2027. Status: ativo`}
+        >
           <View style={styles.planoTopo}>
             <View>
               <View style={styles.selo}>
@@ -145,14 +187,24 @@ export default function Dashboard() {
               </Text>
               <Text style={styles.planoPreco}>{plano.preco} / Mês</Text>
             </View>
-            <Ionicons name="star-outline" size={26} color="#FFB800" />
+            <Ionicons
+              name="star-outline"
+              size={26}
+              color="#FFB800"
+              importantForAccessibility="no"
+            />
           </View>
 
           <View style={styles.divisor} />
 
           <Text style={styles.rotulo}>PRÓXIMA RENOVAÇÃO</Text>
           <View style={styles.renovacao}>
-            <Ionicons name="calendar-outline" size={18} color="#FFB800" />
+            <Ionicons
+              name="calendar-outline"
+              size={18}
+              color="#FFB800"
+              importantForAccessibility="no"
+            />
             <Text style={styles.renovacaoData}>01 de Maio de 2027</Text>
           </View>
         </View>
@@ -161,8 +213,20 @@ export default function Dashboard() {
           <Text style={styles.rotulo}>Forma de pagamento</Text>
           <View style={styles.pagLinha}>
             <View style={styles.pagInfo}>
-              <Ionicons name="card" size={26} color="#FFFFFF" />
-              <Text style={styles.cartaoFinal}>
+              <Ionicons
+                name="card"
+                size={26}
+                color="#FFFFFF"
+                importantForAccessibility="no"
+              />
+              <Text
+                style={styles.cartaoFinal}
+                accessibilityLabel={
+                  cartaoFinal
+                    ? `Cartão com final ${cartaoFinal}`
+                    : 'Nenhum cartão cadastrado'
+                }
+              >
                 {cartaoFinal
                   ? `•••• •••• ${cartaoFinal}`
                   : 'Nenhum cartão cadastrado'}
@@ -171,6 +235,8 @@ export default function Dashboard() {
             <Pressable
               style={styles.botaoAlterar}
               onPress={() => setModalCartao(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Alterar forma de pagamento"
             >
               <Text style={styles.botaoAlterarTexto}>Alterar</Text>
             </Pressable>
@@ -185,13 +251,18 @@ export default function Dashboard() {
           </View>
         </View>
 
-        <Pressable style={styles.botaoPrincipal}>
+        <Pressable style={styles.botaoPrincipal} accessibilityRole="button">
           <Text style={styles.botaoPrincipalTexto}>
             {TEXTO_GERENCIAR[plano.id]}
           </Text>
         </Pressable>
 
-        <Pressable style={styles.cancelar} onPress={cancelarPlano}>
+        <Pressable
+          style={styles.cancelar}
+          onPress={cancelarPlano}
+          accessibilityRole="button"
+          accessibilityLabel="Cancelar plano"
+        >
           <Text style={styles.cancelarTexto}>Cancelar plano</Text>
         </Pressable>
       </View>
@@ -206,8 +277,13 @@ export default function Dashboard() {
           style={styles.menuOverlay}
           onPress={() => setMenuAberto(false)}
         >
-          <View style={styles.menuBox}>
-            <Pressable style={styles.menuItem} onPress={sairDaConta}>
+          <View style={styles.menuBox} accessibilityViewIsModal>
+            <Pressable
+              style={styles.menuItem}
+              onPress={sairDaConta}
+              accessibilityRole="button"
+              accessibilityLabel="Sair da conta"
+            >
               <Ionicons name="log-out-outline" size={20} color="#FF4D4D" />
               <Text style={styles.menuItemSairTexto}>Sair</Text>
             </Pressable>

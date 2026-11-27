@@ -1,22 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useState } from 'react';
+import { AccessibilityInfo, Pressable, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { styles } from '../styles/DayShake.styles';
 import { formatarTempo } from '../utils/formatadores';
 
 type Estado = 'inicial' | 'ativo' | 'recarga';
 
-const DURACAO_CODIGO = 30; 
-const DURACAO_RECARGA = 20; 
+const DURACAO_CODIGO = 60;
+const DURACAO_RECARGA = 20;
 
 export default function DayShake() {
   const [estado, setEstado] = useState<Estado>('inicial');
   const [restante, setRestante] = useState(0);
   const [codigo, setCodigo] = useState('');
 
-  
   useEffect(() => {
     if (estado === 'inicial') return;
 
@@ -27,11 +26,11 @@ export default function DayShake() {
     return () => clearInterval(id);
   }, [estado]);
 
-  
   useEffect(() => {
     if (estado === 'inicial' || restante > 0) return;
 
     if (estado === 'ativo') {
+      AccessibilityInfo.announceForAccessibility('Código expirado.');
       setCodigo('');
       setRestante(DURACAO_RECARGA);
       setEstado('recarga');
@@ -44,6 +43,9 @@ export default function DayShake() {
     setCodigo(`HELIOS-DAYSHAKE-${Date.now()}`);
     setRestante(DURACAO_CODIGO);
     setEstado('ativo');
+    AccessibilityInfo.announceForAccessibility(
+      `Código gerado. Ele expira em ${DURACAO_CODIGO} segundos.`
+    );
   }
 
   return (
@@ -55,30 +57,55 @@ export default function DayShake() {
       {estado === 'inicial' && (
         <>
           <View style={styles.topo}>
-            <MaterialCommunityIcons name="cup" size={38} color="#FFFFFF" />
+            <MaterialCommunityIcons
+              name="cup"
+              size={38}
+              color="#FFFFFF"
+              importantForAccessibility="no"
+              accessibilityElementsHidden
+            />
             <View style={styles.textos}>
-              <Text style={styles.titulo}>Day Shake</Text>
-              <Text style={styles.subtitulo}>Seu beneficio exclusivo</Text>
+              <Text style={styles.titulo} accessibilityRole="header">
+                Day Shake
+              </Text>
+              <Text style={styles.subtitulo}>Seu benefício exclusivo</Text>
             </View>
           </View>
 
-          <Pressable style={styles.botao} onPress={gerarCodigo}>
-            <Text style={styles.botaoTexto}>Gerar Codigo</Text>
+          <Pressable
+            style={styles.botao}
+            onPress={gerarCodigo}
+            accessibilityRole="button"
+            accessibilityLabel="Gerar código do Day Shake"
+          >
+            <Text style={styles.botaoTexto}>Gerar Código</Text>
           </Pressable>
         </>
       )}
 
       {estado === 'ativo' && (
         <View style={styles.linhaCodigo}>
-          <View style={styles.qrBox}>
+          <View
+            style={styles.qrBox}
+            accessible
+            accessibilityRole="image"
+            accessibilityLabel="Código QR do Day Shake. Apresente no caixa da academia."
+          >
             <QRCode value={codigo} size={96} />
           </View>
 
           <View style={styles.infoCodigo}>
-            <Text style={styles.codigoTitulo}>Codigo Ativo!</Text>
+            <Text style={styles.codigoTitulo} accessibilityRole="header">
+              Código Ativo!
+            </Text>
             <Text style={styles.codigoSub}>Use no caixa da academia.</Text>
 
-            <View style={styles.pilula}>
+            <View
+              style={styles.pilula}
+              accessible
+              accessibilityRole="timer"
+              accessibilityLabel={`Tempo restante: ${restante} segundos`}
+            >
               <Text style={styles.pilulaTexto}>{formatarTempo(restante)}</Text>
             </View>
 
@@ -92,9 +119,17 @@ export default function DayShake() {
       {estado === 'recarga' && (
         <>
           <View style={styles.topo}>
-            <MaterialCommunityIcons name="cup" size={38} color="#FFFFFF" />
+            <MaterialCommunityIcons
+              name="cup"
+              size={38}
+              color="#FFFFFF"
+              importantForAccessibility="no"
+              accessibilityElementsHidden
+            />
             <View style={styles.textos}>
-              <Text style={styles.titulo}>Day Shake</Text>
+              <Text style={styles.titulo} accessibilityRole="header">
+                Day Shake
+              </Text>
               <Text style={styles.subtitulo}>
                 Após o uso, você ficará 24h sem poder gerar um novo código.
               </Text>
@@ -103,7 +138,12 @@ export default function DayShake() {
 
           <View style={styles.recargaBloco}>
             <Text style={styles.recargaLabel}>Novo código disponível em:</Text>
-            <View style={styles.pilula}>
+            <View
+              style={styles.pilula}
+              accessible
+              accessibilityRole="timer"
+              accessibilityLabel={`Tempo restante para recarga: ${restante} segundos`}
+            >
               <Text style={styles.pilulaTexto}>
                 {formatarTempo(restante, true)}
               </Text>

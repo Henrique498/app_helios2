@@ -23,7 +23,13 @@ export default function CampoTexto({
 
   return (
     <View style={styles.bloco}>
-      <Text style={[styles.label, claro && styles.labelClaro]}>{label}</Text>
+      <Text
+        style={[styles.label, claro && styles.labelClaro]}
+        importantForAccessibility="no"
+        accessibilityElementsHidden
+      >
+        {label}
+      </Text>
 
       <View
         style={[
@@ -35,8 +41,9 @@ export default function CampoTexto({
         {esquerda}
         <TextInput
           {...rest}
+          accessibilityLabel={rest.accessibilityLabel ?? label}
+          placeholderTextColor={claro ? '#64748B' : '#A0AEC0'}
           style={[styles.input, claro && styles.inputClaro]}
-          placeholderTextColor="#A0AEC0"
           onFocus={(e) => {
             setFocado(true);
             onFocus?.(e);

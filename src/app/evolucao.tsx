@@ -45,6 +45,11 @@ type PontoMensal = {
 };
 
 function gerarSerieMensal(historico: SessaoConcluida[]): PontoMensal[] {
+  const agora = new Date();
+  const chaveMesAtual = `${agora.getFullYear()}-${String(
+    agora.getMonth() + 1
+  ).padStart(2, '0')}`;
+
   const baseMeses: Record<
     string,
     { label: string; tonelagem: number; treinos: number }
@@ -80,7 +85,8 @@ function gerarSerieMensal(historico: SessaoConcluida[]): PontoMensal[] {
     .slice(-6);
 
   return ordenados.map(([chave, dados], index) => {
-    if (index === 0) {
+    // Não calcula variação percentual para o mês base nem para o mês em andamento
+    if (index === 0 || chave === chaveMesAtual) {
       return {
         chave,
         ...dados,
@@ -188,10 +194,18 @@ export default function EvolucaoScreen() {
           marginBottom: 18,
         }}
       >
-        <Pressable onPress={() => router.back()} hitSlop={10}>
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+        >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </Pressable>
-        <Text style={{ color: '#FFB800', fontSize: 18, fontWeight: '800' }}>
+        <Text
+          style={{ color: '#FFB800', fontSize: 18, fontWeight: '800' }}
+          accessibilityRole="header"
+        >
           Dashboard de Evolução
         </Text>
         <View style={{ width: 24 }} />
@@ -199,6 +213,12 @@ export default function EvolucaoScreen() {
 
       {/* 1. Indicador de Evolução + Descanso entre treinos */}
       <View
+        accessible
+        accessibilityLabel={`${
+          evolucaoPositiva
+            ? 'Em evolução contínua'
+            : 'Atenção: volume abaixo do último treino'
+        }. ${descansoEntreTreinos}`}
         style={{
           backgroundColor: '#0D1B2A',
           borderWidth: 1,
@@ -213,6 +233,7 @@ export default function EvolucaoScreen() {
             name={evolucaoPositiva ? 'trending-up' : 'trending-down'}
             size={30}
             color={evolucaoPositiva ? '#22C55E' : '#EF4444'}
+            importantForAccessibility="no"
           />
           <View style={{ flex: 1 }}>
             <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '800' }}>
@@ -229,6 +250,7 @@ export default function EvolucaoScreen() {
 
       {/* 2. Gráfico de Evolução Mensal (Subiu / Desceu) */}
       <Text
+        accessibilityRole="header"
         style={{
           color: '#FFFFFF',
           fontSize: 16,
@@ -251,6 +273,7 @@ export default function EvolucaoScreen() {
       >
         {mesAtivo && (
           <View
+            accessibilityLiveRegion="polite"
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -265,7 +288,7 @@ export default function EvolucaoScreen() {
           >
             <View>
               <Text style={{ color: '#94A3B8', fontSize: 11 }}>
-                Desempenho em {mesAtivo.label}/2026
+                Desempenho em {mesAtivo.label}/{mesAtivo.chave.slice(0, 4)}
               </Text>
               <Text
                 style={{
@@ -315,6 +338,7 @@ export default function EvolucaoScreen() {
                         ? '#EF4444'
                         : '#94A3B8'
                   }
+                  importantForAccessibility="no"
                 />
                 <Text
                   style={{
@@ -334,13 +358,16 @@ export default function EvolucaoScreen() {
                 </Text>
               </View>
             ) : (
-              <Text style={{ color: '#94A3B8', fontSize: 11 }}>Mês base</Text>
+              <Text style={{ color: '#94A3B8', fontSize: 11 }}>
+                {mesAtivo.treinos === 0 ? 'Em andamento' : 'Mês base'}
+              </Text>
             )}
           </View>
         )}
 
         {/* Barras verticais dos meses */}
         <View
+          accessibilityLabel="Gráfico de evolução mensal. Toque em um mês para ver detalhes."
           style={{
             flexDirection: 'row',
             alignItems: 'flex-end',
@@ -364,10 +391,25 @@ export default function EvolucaoScreen() {
                   ? '#EF4444'
                   : '#FFB800';
 
+            const textoVariacao =
+              ponto.variacaoPercentual === null
+                ? 'mês base'
+                : ponto.status === 'SUBIU'
+                  ? `subiu ${ponto.variacaoPercentual}%`
+                  : ponto.status === 'DESCEU'
+                    ? `desceu ${Math.abs(ponto.variacaoPercentual)}%`
+                    : 'estável';
+
             return (
               <Pressable
                 key={ponto.chave}
                 onPress={() => setMesSelecionadoIdx(idx)}
+                hitSlop={{ top: 8, bottom: 8 }}
+                accessibilityRole="button"
+                accessibilityLabel={`${ponto.label}: ${ponto.tonelagem.toLocaleString(
+                  'pt-BR'
+                )} quilos, ${ponto.treinos} treinos, ${textoVariacao}`}
+                accessibilityState={{ selected: selecionado }}
                 style={{
                   flex: 1,
                   alignItems: 'center',
@@ -418,6 +460,7 @@ export default function EvolucaoScreen() {
 
         {/* Legenda */}
         <View
+          importantForAccessibility="no-hide-descendants"
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
@@ -468,6 +511,7 @@ export default function EvolucaoScreen() {
 
       {/* 3. Periodização & Objetivo Pessoal */}
       <Text
+        accessibilityRole="header"
         style={{
           color: '#FFFFFF',
           fontSize: 16,
@@ -498,6 +542,8 @@ export default function EvolucaoScreen() {
               <Pressable
                 key={freq}
                 onPress={() => atualizarPeriodizacao({ frequenciaMeta: freq })}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: ativo }}
                 style={{
                   flex: 1,
                   backgroundColor: ativo ? '#FFB800' : '#111827',
@@ -533,7 +579,8 @@ export default function EvolucaoScreen() {
             marginBottom: 14,
           }}
           placeholder="Escreva seu objetivo específico..."
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel="Objetivo pessoal"
           value={periodizacao.objetivoPessoal}
           onChangeText={(txt) =>
             atualizarPeriodizacao({ objetivoPessoal: txt })
@@ -553,6 +600,15 @@ export default function EvolucaoScreen() {
               <Pressable
                 key={item.id}
                 onPress={() => atualizarPeriodizacao({ tipo: item.id })}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: ativo }}
+                accessibilityLabel={
+                  item.id === 'MICRO'
+                    ? 'Microciclo semanal'
+                    : item.id === 'MESO'
+                      ? 'Mesociclo de 3 a 6 semanas'
+                      : 'Macrociclo anual'
+                }
                 style={{
                   flex: 1,
                   backgroundColor: ativo ? '#FFB800' : '#111827',
@@ -608,6 +664,8 @@ export default function EvolucaoScreen() {
                     onPress={() =>
                       atualizarPeriodizacao({ estiloMesociclo: estilo })
                     }
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: selecionado }}
                     style={{
                       backgroundColor: selecionado
                         ? 'rgba(255, 184, 0, 0.2)'
@@ -648,7 +706,14 @@ export default function EvolucaoScreen() {
                   onPress={() =>
                     atualizarPeriodizacao({ semanasMesociclo: sem })
                   }
+                  accessibilityRole="radio"
+                  accessibilityLabel={`${sem} semanas`}
+                  accessibilityState={{
+                    selected: periodizacao.semanasMesociclo === sem,
+                  }}
                   style={{
+                    minHeight: 44,
+                    justifyContent: 'center',
                     backgroundColor:
                       periodizacao.semanasMesociclo === sem
                         ? '#FFB800'
@@ -738,6 +803,7 @@ export default function EvolucaoScreen() {
 
       {/* 4. Volume Load por Músculo */}
       <Text
+        accessibilityRole="header"
         style={{
           color: '#FFFFFF',
           fontSize: 16,
@@ -810,6 +876,7 @@ export default function EvolucaoScreen() {
 
       {/* 5. Ranking de Exercícios */}
       <Text
+        accessibilityRole="header"
         style={{
           color: '#FFFFFF',
           fontSize: 16,
@@ -822,6 +889,8 @@ export default function EvolucaoScreen() {
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 10 }}>
         <Pressable
           onPress={() => setAbaRanking('USADOS')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: abaRanking === 'USADOS' }}
           style={{
             flex: 1,
             backgroundColor: abaRanking === 'USADOS' ? '#FFB800' : '#111827',
@@ -842,6 +911,8 @@ export default function EvolucaoScreen() {
         </Pressable>
         <Pressable
           onPress={() => setAbaRanking('PESO')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: abaRanking === 'PESO' }}
           style={{
             flex: 1,
             backgroundColor: abaRanking === 'PESO' ? '#FFB800' : '#111827',
@@ -875,6 +946,12 @@ export default function EvolucaoScreen() {
         {(abaRanking === 'USADOS' ? maisUsados : maisPesados).map((ex, idx) => (
           <View
             key={ex.nome}
+            accessible
+            accessibilityLabel={`${idx + 1}º lugar: ${ex.nome}, ${
+              abaRanking === 'USADOS'
+                ? `usado ${ex.vezesUsado} vezes`
+                : `maior carga ${ex.maiorCarga} quilos`
+            }`}
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -904,10 +981,18 @@ export default function EvolucaoScreen() {
           marginBottom: 10,
         }}
       >
-        <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '800' }}>
+        <Text
+          style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '800' }}
+          accessibilityRole="header"
+        >
           Competição de Amigos
         </Text>
         <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Ordenar por ${
+            criterioAmigos === 'TONELAGEM' ? 'peso total' : 'treinos'
+          }`}
+          accessibilityHint="Toque para alternar entre peso total e número de treinos"
           onPress={() =>
             setCriterioAmigos((c) =>
               c === 'TONELAGEM' ? 'TREINOS' : 'TONELAGEM'
@@ -934,6 +1019,14 @@ export default function EvolucaoScreen() {
         {amigosOrdenados.map((amigo, index) => (
           <View
             key={amigo.id}
+            accessible
+            accessibilityLabel={`${index + 1}º lugar: ${amigo.nome}${
+              amigo.isUsuario ? ' (você)' : ''
+            }, ${
+              amigo.treinosSemana
+            } treinos na semana, ${amigo.tonelagemSemana.toLocaleString(
+              'pt-BR'
+            )} quilos`}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -947,7 +1040,7 @@ export default function EvolucaoScreen() {
                 : '#111827',
               borderWidth: amigo.isUsuario ? 1 : 0,
               borderColor: '#FFB800',
-            }} 
+            }}
           >
             <View
               style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
@@ -956,6 +1049,7 @@ export default function EvolucaoScreen() {
                 name={index === 0 ? 'trophy' : 'medal-outline'}
                 size={22}
                 color={index === 0 ? '#FFB800' : '#94A3B8'}
+                importantForAccessibility="no"
               />
               <View>
                 <Text style={{ color: '#FFFFFF', fontWeight: '700' }}>

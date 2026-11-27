@@ -1,4 +1,3 @@
-
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
@@ -110,7 +109,11 @@ export default function FotosEvolucao() {
     return (
       <SafeAreaView style={styles.tela}>
         <View style={styles.carregando}>
-          <ActivityIndicator size="large" color="#FFB800" />
+          <ActivityIndicator
+            size="large"
+            color="#FFB800"
+            accessibilityLabel="Carregando fotos"
+          />
         </View>
       </SafeAreaView>
     );
@@ -127,13 +130,15 @@ export default function FotosEvolucao() {
           <Pressable
             onPress={() => router.back()}
             style={styles.voltar}
-            hitSlop={10}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar"
           >
             <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
           </Pressable>
 
           <View>
-            <Text style={styles.titulo}>
+            <Text style={styles.titulo} accessibilityRole="header">
               Minha <Text style={styles.tituloDestaque}>Evolução</Text>
             </Text>
             <Text style={styles.subtitulo}>
@@ -152,6 +157,9 @@ export default function FotosEvolucao() {
                 key={p}
                 style={[styles.chip, ativo && styles.chipAtivo]}
                 onPress={() => setPosicao(p)}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: ativo }}
+                accessibilityLabel={NOMES_POSICOES[p]}
               >
                 <Text
                   style={[styles.chipTexto, ativo && styles.chipTextoAtivo]}
@@ -172,12 +180,20 @@ export default function FotosEvolucao() {
             ]}
             onPress={tirarFoto}
             disabled={salvando}
+            accessibilityRole="button"
+            accessibilityLabel="Tirar foto"
+            accessibilityState={{ disabled: salvando, busy: salvando }}
           >
             {salvando ? (
               <ActivityIndicator color="#0A0F1D" />
             ) : (
               <>
-                <Ionicons name="camera" size={20} color="#0A0F1D" />
+                <Ionicons
+                  name="camera"
+                  size={20}
+                  color="#0A0F1D"
+                  importantForAccessibility="no"
+                />
                 <Text style={styles.botaoPrincipalTexto}>Tirar foto</Text>
               </>
             )}
@@ -190,14 +206,22 @@ export default function FotosEvolucao() {
             ]}
             onPress={escolherDaGaleria}
             disabled={salvando}
+            accessibilityRole="button"
+            accessibilityLabel="Escolher da galeria"
+            accessibilityState={{ disabled: salvando }}
           >
-            <Ionicons name="images-outline" size={20} color="#FFB800" />
+            <Ionicons
+              name="images-outline"
+              size={20}
+              color="#FFB800"
+              importantForAccessibility="no"
+            />
             <Text style={styles.botaoSecundarioTexto}>Galeria</Text>
           </Pressable>
         </View>
 
         {/* Antes e depois */}
-        <Text style={styles.secaoTitulo}>
+        <Text style={styles.secaoTitulo} accessibilityRole="header">
           Antes e depois • {NOMES_POSICOES[posicao]}
         </Text>
         <View style={styles.card}>
@@ -207,10 +231,17 @@ export default function FotosEvolucao() {
                 <Pressable
                   style={styles.comparacaoColuna}
                   onPress={() => setFotoAberta(maisAntiga)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Primeira foto, ${formatarData(
+                    maisAntiga.data
+                  )}. Toque para ampliar`}
                 >
                   <Image
                     source={{ uri: maisAntiga.uri }}
                     style={styles.comparacaoImagem}
+                    accessibilityLabel={`Foto de ${NOMES_POSICOES[
+                      posicao
+                    ].toLowerCase()}`}
                   />
                   <Text style={styles.comparacaoLegenda}>Primeira foto</Text>
                   <Text style={styles.comparacaoData}>
@@ -221,10 +252,17 @@ export default function FotosEvolucao() {
                 <Pressable
                   style={styles.comparacaoColuna}
                   onPress={() => setFotoAberta(maisRecente)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Foto mais recente, ${formatarData(
+                    maisRecente.data
+                  )}. Toque para ampliar`}
                 >
                   <Image
                     source={{ uri: maisRecente.uri }}
                     style={styles.comparacaoImagem}
+                    accessibilityLabel={`Foto de ${NOMES_POSICOES[
+                      posicao
+                    ].toLowerCase()}`}
                   />
                   <Text style={styles.comparacaoLegenda}>Mais recente</Text>
                   <Text style={styles.comparacaoData}>
@@ -234,7 +272,12 @@ export default function FotosEvolucao() {
               </View>
 
               <View style={styles.resumoEvolucao}>
-                <Ionicons name="trending-up" size={18} color="#FFB800" />
+                <Ionicons
+                  name="trending-up"
+                  size={18}
+                  color="#FFB800"
+                  importantForAccessibility="no"
+                />
                 <Text style={styles.resumoEvolucaoTexto}>
                   {dias === 0
                     ? 'Fotos do mesmo dia'
@@ -244,7 +287,12 @@ export default function FotosEvolucao() {
             </>
           ) : (
             <View style={styles.vazio}>
-              <Ionicons name="camera-outline" size={32} color="#64748B" />
+              <Ionicons
+                name="camera-outline"
+                size={32}
+                color="#94A3B8"
+                importantForAccessibility="no"
+              />
               <Text style={styles.vazioTexto}>
                 {fotosDaPosicao.length === 0
                   ? `Você ainda não tem fotos de ${NOMES_POSICOES[
@@ -257,7 +305,7 @@ export default function FotosEvolucao() {
         </View>
 
         {/* Histórico */}
-        <Text style={styles.secaoTitulo}>
+        <Text style={styles.secaoTitulo} accessibilityRole="header">
           Histórico ({fotosDaPosicao.length})
         </Text>
         {fotosDaPosicao.length > 0 ? (
@@ -267,6 +315,10 @@ export default function FotosEvolucao() {
                 key={foto.id}
                 style={styles.miniatura}
                 onPress={() => setFotoAberta(foto)}
+                accessibilityRole="button"
+                accessibilityLabel={`Foto de ${NOMES_POSICOES[
+                  foto.posicao
+                ].toLowerCase()}, ${formatarData(foto.data)}`}
               >
                 <Image
                   source={{ uri: foto.uri }}
@@ -290,11 +342,13 @@ export default function FotosEvolucao() {
         animationType="fade"
         onRequestClose={() => setFotoAberta(null)}
       >
-        <View style={styles.modalFundo}>
+        <View style={styles.modalFundo} accessibilityViewIsModal>
           <View style={styles.modalTopo}>
             <Pressable
               style={styles.modalBotaoIcone}
               onPress={() => setFotoAberta(null)}
+              accessibilityRole="button"
+              accessibilityLabel="Fechar foto"
             >
               <Ionicons name="close" size={24} color="#FFFFFF" />
             </Pressable>
@@ -303,6 +357,8 @@ export default function FotosEvolucao() {
               <Pressable
                 style={styles.modalBotaoIcone}
                 onPress={() => confirmarExclusao(fotoAberta)}
+                accessibilityRole="button"
+                accessibilityLabel="Excluir foto"
               >
                 <Ionicons name="trash-outline" size={22} color="#FF4D4D" />
               </Pressable>
@@ -315,6 +371,9 @@ export default function FotosEvolucao() {
                 source={{ uri: fotoAberta.uri }}
                 style={styles.modalImagem}
                 resizeMode="contain"
+                accessibilityLabel={`Foto de ${NOMES_POSICOES[
+                  fotoAberta.posicao
+                ].toLowerCase()}, ${formatarData(fotoAberta.data)}`}
               />
               <View style={styles.modalInfo}>
                 <Text style={styles.modalInfoTitulo}>

@@ -18,6 +18,9 @@ export default function OpcaoPagamento({
     <Pressable
       style={[styles.opcao, selecionado && styles.opcaoSelecionada]}
       onPress={onPress}
+      accessibilityRole="radio"
+      accessibilityState={{ selected: selecionado, checked: selecionado }}
+      accessibilityLabel={`${titulo}. Bandeiras aceitas: ${marcas.join(', ')}`}
     >
       <View style={styles.opcaoTextos}>
         <Text style={styles.opcaoTitulo}>{titulo}</Text>

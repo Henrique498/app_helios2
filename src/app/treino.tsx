@@ -37,6 +37,9 @@ export default function TreinoScreen() {
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
         >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
@@ -47,8 +50,9 @@ export default function TreinoScreen() {
             size={32}
             color="#F5B800"
             style={styles.iconTop}
+            importantForAccessibility="no"
           />
-          <Text style={styles.title}>
+          <Text style={styles.title} accessibilityRole="header">
             Minha Rotina{'\n'}de{' '}
             <Text style={styles.titleHighlight}>Treino</Text>
           </Text>

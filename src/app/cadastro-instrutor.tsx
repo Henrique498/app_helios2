@@ -99,22 +99,33 @@ export default function CadastroInstrutorScreen() {
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.topoBar}>
-        <Pressable onPress={() => router.replace('/LoginScreen')} hitSlop={10}>
+        <Pressable
+          onPress={() => router.replace('/LoginScreen')}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar para o login"
+        >
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </Pressable>
       </View>
 
       {/* A logo oficial é gerada universalmente pelo _layout.tsx */}
-      <Text style={[styles.tituloPagina, { marginTop: 16 }]}>
+      <Text
+        style={[styles.tituloPagina, { marginTop: 16 }]}
+        accessibilityRole="header"
+      >
         Painel do Gestor
       </Text>
 
-      <Text style={styles.secaoTitulo}>DADOS PESSOAIS</Text>
+      <Text style={styles.secaoTitulo} accessibilityRole="header">
+        DADOS PESSOAIS
+      </Text>
       <View style={styles.inputBox}>
         <TextInput
           style={styles.input}
           placeholder="Nome completo"
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel="Nome completo"
           autoCapitalize="words"
           value={nome}
           onChangeText={setNome}
@@ -124,7 +135,8 @@ export default function CadastroInstrutorScreen() {
         <TextInput
           style={styles.input}
           placeholder="Data de Nascimento (ex: DD/MM/AAAA)"
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel="Data de nascimento"
           keyboardType="numeric"
           maxLength={10}
           value={nascimento}
@@ -135,7 +147,8 @@ export default function CadastroInstrutorScreen() {
         <TextInput
           style={styles.input}
           placeholder="Digite seu CPF (000.000.000-00)"
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel="CPF"
           keyboardType="numeric"
           maxLength={14}
           value={cpf}
@@ -143,12 +156,15 @@ export default function CadastroInstrutorScreen() {
         />
       </View>
 
-      <Text style={styles.secaoTitulo}>INFORMAÇÕES PROFISSIONAIS</Text>
+      <Text style={styles.secaoTitulo} accessibilityRole="header">
+        INFORMAÇÕES PROFISSIONAIS
+      </Text>
       <View style={styles.inputBox}>
         <TextInput
           style={styles.input}
           placeholder="Número do CREF (ex: CREF 000000-G/SP)"
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel="Número do CREF"
           autoCapitalize="characters"
           maxLength={16}
           value={cref}
@@ -159,6 +175,13 @@ export default function CadastroInstrutorScreen() {
       <Pressable
         style={styles.inputBox}
         onPress={() => setModalEspecialidades(true)}
+        accessibilityRole="button"
+        accessibilityLabel={`Especialidades: ${
+          especialidadesSelecionadas.length
+            ? especialidadesSelecionadas.join(', ')
+            : 'nenhuma selecionada'
+        }`}
+        accessibilityHint="Toque para escolher"
       >
         <Text
           style={
@@ -172,15 +195,24 @@ export default function CadastroInstrutorScreen() {
             ? especialidadesSelecionadas.join(', ')
             : 'Especialidades (ex: Musculação, Dança)'}
         </Text>
-        <Ionicons name="chevron-down" size={18} color="#94A3B8" />
+        <Ionicons
+          name="chevron-down"
+          size={18}
+          color="#94A3B8"
+          importantForAccessibility="no"
+          accessibilityElementsHidden
+        />
       </Pressable>
 
-      <Text style={styles.secaoTitulo}>CONTATO E ACESSO</Text>
+      <Text style={styles.secaoTitulo} accessibilityRole="header">
+        CONTATO E ACESSO
+      </Text>
       <View style={styles.inputBox}>
         <TextInput
           style={styles.input}
           placeholder="Digite o e-mail profissional"
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel="E-mail profissional"
           keyboardType="email-address"
           autoCapitalize="none"
           value={emailProf}
@@ -191,12 +223,18 @@ export default function CadastroInstrutorScreen() {
         <TextInput
           style={styles.input}
           placeholder="Digite a senha de login"
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel="Senha de login"
           secureTextEntry={!verSenha}
           value={senha}
           onChangeText={setSenha}
         />
-        <Pressable onPress={() => setVerSenha(!verSenha)}>
+        <Pressable
+          onPress={() => setVerSenha(!verSenha)}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel={verSenha ? 'Ocultar senha' : 'Mostrar senha'}
+        >
           <Ionicons
             name={verSenha ? 'eye-outline' : 'eye-off-outline'}
             size={20}
@@ -208,12 +246,22 @@ export default function CadastroInstrutorScreen() {
         <TextInput
           style={styles.input}
           placeholder="Confirme sua senha"
-          placeholderTextColor="#64748B"
+          placeholderTextColor="#94A3B8"
+          accessibilityLabel="Confirmar senha"
           secureTextEntry={!verConfirmar}
           value={confirmarSenha}
           onChangeText={setConfirmarSenha}
         />
-        <Pressable onPress={() => setVerConfirmar(!verConfirmar)}>
+        <Pressable
+          onPress={() => setVerConfirmar(!verConfirmar)}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel={
+            verConfirmar
+              ? 'Ocultar confirmação de senha'
+              : 'Mostrar confirmação de senha'
+          }
+        >
           <Ionicons
             name={verConfirmar ? 'eye-outline' : 'eye-off-outline'}
             size={20}
@@ -222,7 +270,12 @@ export default function CadastroInstrutorScreen() {
         </Pressable>
       </View>
 
-      <Pressable style={styles.botaoPrincipal} onPress={aoCadastrar}>
+      <Pressable
+        style={styles.botaoPrincipal}
+        onPress={aoCadastrar}
+        accessibilityRole="button"
+        accessibilityLabel="Cadastrar Instrutor"
+      >
         <Text style={styles.botaoPrincipalTexto}>Cadastrar Instrutor</Text>
       </Pressable>
 
@@ -236,12 +289,21 @@ export default function CadastroInstrutorScreen() {
           style={styles.modalOverlay}
           onPress={() => setModalEspecialidades(false)}
         >
-          <Pressable style={styles.modalBox} onPress={() => {}}>
+          <Pressable
+            style={styles.modalBox}
+            onPress={() => {}}
+            accessibilityViewIsModal
+          >
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitulo}>
+              <Text style={styles.modalTitulo} accessibilityRole="header">
                 Selecione as Especialidades
               </Text>
-              <Pressable onPress={() => setModalEspecialidades(false)}>
+              <Pressable
+                onPress={() => setModalEspecialidades(false)}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel="Fechar"
+              >
                 <Ionicons name="close" size={24} color="#94A3B8" />
               </Pressable>
             </View>
@@ -257,6 +319,9 @@ export default function CadastroInstrutorScreen() {
                       selecionada && styles.opcaoItemAtiva,
                     ]}
                     onPress={() => alternarEspecialidade(item)}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: selecionada }}
+                    accessibilityLabel={item}
                   >
                     <Text
                       style={[
@@ -269,7 +334,9 @@ export default function CadastroInstrutorScreen() {
                     <Ionicons
                       name={selecionada ? 'checkbox' : 'square-outline'}
                       size={22}
-                      color={selecionada ? '#FFB800' : '#64748B'}
+                      color={selecionada ? '#FFB800' : '#94A3B8'}
+                      importantForAccessibility="no"
+                      accessibilityElementsHidden
                     />
                   </Pressable>
                 );
@@ -279,6 +346,8 @@ export default function CadastroInstrutorScreen() {
             <Pressable
               style={styles.modalBotaoConfirmar}
               onPress={() => setModalEspecialidades(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Confirmar especialidades"
             >
               <Text style={styles.modalBotaoConfirmarTexto}>Confirmar</Text>
             </Pressable>
